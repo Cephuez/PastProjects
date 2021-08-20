@@ -1,0 +1,51 @@
+CSID: 23397592
+Server Port 1 -> 17592
+Connector Port 2 -> 27592
+Connection: ssh -L 27592:127.0.0.1:27592 cephuez@cs460.cs.arizona.edu
+Instance Name: tomcats
+
+Server Port 1 -> 17598
+Connector Port 2 -> 27598
+Connection: ssh -L 27598:127.0.0.1:27598 cephuez@cs460.cs.arizona.edu
+Instance Name: tomcats
+
+export PATH="/usr/bin:/bin"
+cd tomcat9/tomcats/webapps/460examples/WEB-INF/classes
+
+-bash: ps/460examples/WEB-INF/classes/: No such file or directory
+
+website:
+http://127.0.0.1:27598/460examples
+
+COMMANDS:
+
+nano ~/.profile
+source ~/.profile
+javac *.java
+
+tstart
+tomcat9/tomcats/bin/startup.sh
+
+tshutdown
+tomcat9/bin/shutdown.sh
+
+Oracle Account:
+/usr/local/bin/sqlpl
+cephuez@oracle.aloe
+a6466
+
+
+//
+email
+name
+selfIntroduction
+location
+DoBday
+DoBmonth
+DoByear
+adopter
+sender
+adoptingExperience
+
+CREATE TABLE Member (EmailAddress varchar2(20) primary key, Name varchar2(20) not null, SelfIntroduction varchar2(50), Location varchar2(50) not null, Birthday date not null, IsAdopter varchar2(1) check(IsAdopter in ('y', 'n')) not null, IsSender varchar2(1) check(IsSender in ('y', 'n')) not null, AdoptingExperience varchar2(50));
+CREATE TABLE Pet (EmailAddress varchar2(20) references Member(EmailAddress), Name varchar2(10), Birthday date, IsSterilized varchar2(1) check(IsSterilized in ('y', 'n')), Breed varchar2(7) check(Breed in ('Cat', 'Dog', 'Rabbit')) not null, DaysWalk number(3) check (DaysWalk > 0), BiteWire varchar2(1) check(BiteWire in ('y', 'n')), constraint PK_Pet primary key(EmailAddress, Name, Birthday));

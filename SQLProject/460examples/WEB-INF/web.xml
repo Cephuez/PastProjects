@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE web-app
+     PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<servlet>
+		<servlet-name>SimpleServlet</servlet-name>
+		<servlet-class>SimpleServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>CustomerListServlet</servlet-name>
+		<servlet-class>CustomerListServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>AddMerchandiseServlet</servlet-name>
+		<servlet-class>AddMerchandiseServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>LoginServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>AddIndividualServlet</servlet-name>
+		<servlet-class>AddIndividualServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>FindMerchandiseServlet</servlet-name>
+		<servlet-class>FindMerchandiseServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>LogoutServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>SimpleServlet</servlet-name>
+		<url-pattern>/SimpleServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>CustomerListServlet</servlet-name>
+		<url-pattern>/CustomerListServlet</url-pattern>
+	</servlet-mapping>	
+
+	<servlet-mapping>
+		<servlet-name>AddIndividualServlet</servlet-name>
+		<url-pattern>/AddIndividualServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>FindMerchandiseServlet</servlet-name>
+		<url-pattern>/FindMerchandiseServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>AddMerchandiseServlet</servlet-name>
+		<url-pattern>/AddMerchandiseServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/LogoutServlet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/LoginServlet</url-pattern>
+	</servlet-mapping>	
+	
+</web-app>
