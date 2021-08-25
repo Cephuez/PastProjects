@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActionsFragment"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:id="@+id/primary_attack"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:background="@drawable/level_1_primary_attack"
+        android:text="\u221E"
+        android:gravity="end"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingRight="3dp"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/secondary_attack"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:background="@drawable/level_1_secondary_attack"
+        android:layout_margin="10dp"
+        android:gravity="end"
+        android:textSize="20sp"
+        android:text="3"
+        android:textStyle="bold"
+        android:paddingRight="3dp"/>
+
+    <TextView
+        android:id="@+id/third_attack"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:background="@drawable/level_1_third_attack"
+        android:layout_margin="10dp"
+        android:gravity="end"
+        android:textSize="20sp"
+        android:text="3"
+        android:textStyle="bold"
+        android:paddingRight="3dp"/>
+
+
+</LinearLayout>

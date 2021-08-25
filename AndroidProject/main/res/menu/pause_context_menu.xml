@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <item
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:textSize="60sp"
+        android:gravity="center"
+        android:title="Paused" />
+    <item
+        android:id="@+id/resume_pause"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:title="Resume" />
+    <item
+        android:id="@+id/settings_pause"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:title="Settings" />
+    <item
+        android:id="@+id/main_menu_pause"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:title="Main Menu" />
+
+</menu>
