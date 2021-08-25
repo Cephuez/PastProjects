@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".GameInfoFragment"
+    android:gravity="center">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/lives_box"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="#2196F3"
+        android:layout_margin="2dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:gravity="center"/>
+    <TextView
+        android:id="@+id/level_box"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="#2196F3"
+        android:layout_margin="2dp"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"/>
+    <TextView
+        android:id="@+id/howTo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="#2196F3"
+        android:layout_margin="2dp"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:text="How To Play"/>
+    <ImageView
+        android:id="@+id/pause_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="#2196F3"
+        android:layout_margin="2dp"
+        android:src="@drawable/pause"/>
+</LinearLayout>

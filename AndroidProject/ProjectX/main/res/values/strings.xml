@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">OperationX</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="levels">Levels</string>
+    <string name="settings">Settings</string>
+    <string name="share_with_friends">Share with friends</string>
+    <string name="volume">Volume:</string>
+    <string name="normal">Normal</string>
+    <string name="fast">Fast</string>
+    <string name="game_fps">Game FPS:</string>
+    <string name="done">DONE</string>
+    <string name="saved_volume_key">OPERATIONX_VOLUME_KEY</string>
+    <string name="saved_fps_key">OPERATIONX_GAME_FPS_KEY</string>
+    <string name="share_message">
+        Hi there, please try our game, pretty please? We are poor\n
+        indie game developers and we would love for you to play and share if you like\n
+        the game. Make us rich so we can improve the game!\n
+    </string>
+    <string name="leader_boards">Leader Boards</string>
+    <string name="level_one_howTo">
+        You will need to get from the start point to the end point (Slide left or right). You will encounter enemies along your way and will need to use your actions to get rid of them. The buttons on the bottom go as:\n\n
+        1 -> Fists : Good against the guards \n
+        2 -> Bombs: Good against anything on screen\n
+        3 -> Third: Good against the guards and robo dogs.\n
+        You earn more points the less amount of items used
+    </string>
+
+    <string name="level_two_howTo">
+        You will need to dodge or combat your way to the end point. You can only slide up or down at this level. The following buttons will help you combat the enemies \n\n
+        1 -> Laser Bullet: There for determining distance\n
+        2 -> Rocket Missile: Destroys anything in its path\n
+        3 -> Nuclear Bomb: Destroys anything shown on screen\n
+        You earn more points the less amount of items used.
+    </string>
+</resources>
