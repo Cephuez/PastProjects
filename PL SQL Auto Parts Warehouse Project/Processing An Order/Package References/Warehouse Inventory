@@ -1,0 +1,163 @@
+create or replace PACKAGE PACKAGE_WAREHOUSE_INVENTORY
+AS
+    PROCEDURE MOVE_TOTE_TO_STAGE(EMP_ID INT, TOTE_BIN APPROVED_ZONE.BIN%TYPE, TOTE_ZONE APPROVED_ZONE.ZONE%TYPE); 
+
+    PROCEDURE ADD_PO_PRODUCTS_TO_RECEIVING(PO_NUM INT);
+    PROCEDURE ADD_INCOMING_PRODUCTS(P_NUM INT, UN INT);
+    PROCEDURE STOCK_PRODUCT(P_ID INT, B_NAME VARCHAR2, Z_NAME VARCHAR2, UN INT);
+    PROCEDURE MOVE_PRODUCT(P_ID INT, OLD_BIN VARCHAR2, OLD_ZONE VARCHAR2, UN INT, 
+        NEW_BIN VARCHAR2, NEW_ZONE VARCHAR2);
+    PROCEDURE UPDATE_ZONE_COUNTS;
+
+END PACKAGE_WAREHOUSE_INVENTORY;
+
+create or replace PACKAGE BODY PACKAGE_WAREHOUSE_INVENTORY
+AS
+    PROCEDURE MOVE_TOTE_TO_STAGE(EMP_ID INT, TOTE_BIN APPROVED_ZONE.BIN%TYPE, TOTE_ZONE APPROVED_ZONE.ZONE%TYPE)
+    IS
+    CURSOR tote_cursor IS
+        SELECT PRODUCT_ID, UNITS
+        FROM WAREHOUSE_INVENTORY
+        WHERE TOTE_BIN LIKE BIN AND TOTE_ZONE LIKE ZONE;
+
+    tote_product_id WAREHOUSE_INVENTORY.PRODUCT_ID%TYPE;
+    tote_units WAREHOUSE_INVENTORY.UNITS%TYPE;
+
+    new_bin APPROVED_ZONE.BIN%TYPE := 'STAGE';
+    new_zone APPROVED_BIN.BIN%TYPE := 'STAGE_001';
+    BEGIN
+    OPEN tote_cursor;
+        LOOP
+            FETCH tote_cursor
+            INTO tote_product_id, tote_units;
+            EXIT WHEN tote_cursor%notfound;
+            /* Prompt the user what stage the items are being moved to */
+            /* Hard coded for now */
+            MOVE_PRODUCT(tote_product_id, TOTE_BIN, TOTE_ZONE, tote_units, new_bin, new_zone);
+
+            DBMS_OUTPUT.PUT_LINE(tote_product_id);
+            DBMS_OUTPUT.PUT_LINE(tote_units);
+            DBMS_OUTPUT.PUT_LINE('');
+        END LOOP;
+    CLOSE tote_cursor;    
+    END;
+
+    PROCEDURE ADD_PO_PRODUCTS_TO_RECEIVING(PO_NUM INT)
+    IS
+    CURSOR po_cursor IS
+        SELECT PART_NUMBER, QUANTITY, UNIT_PRICE, PROCESSED
+        FROM PURCHASE_ORDERS
+        WHERE PO_NUMBER = PO_NUM AND PROCESSED = 'N';
+
+    part_num PURCHASE_ORDERS.PART_NUMBER%TYPE;
+    qty PURCHASE_ORDERS.QUANTITY%TYPE;
+    unit_p PURCHASE_ORDERS.UNIT_PRICE%TYPE;
+    proc PURCHASE_ORDERS.PROCESSED%TYPE;
+
+    p_name VARCHAR2(255);
+    p_id WAREHOUSE_INVENTORY.PRODUCT_ID%TYPE;
+    p_count NUMBER := 0;
+
+    BEGIN
+    OPEN po_cursor;
+        LOOP
+            DBMS_OUTPUT.PUT_LINE('1');
+            FETCH po_cursor 
+            INTO part_num, qty, unit_p, proc;
+            EXIT WHEN po_cursor%notfound;
+            DBMS_OUTPUT.PUT_LINE('2');
+            p_name := GET_PART_NAME(part_num);
+            DBMS_OUTPUT.PUT_LINE('3');
+            p_id := GET_PRODUCT_ID(p_name);  
+            DBMS_OUTPUT.PUT_LINE('4');
+            p_count := CHECK_PRODUCT_ON_ZONE(P_ID, 'REC', 'Receiving');
+            DBMS_OUTPUT.PUT_LINE('5');
+            IF p_count = 0 THEN
+                INSERT INTO WAREHOUSE_INVENTORY(WH_ID, BIN, ZONE, UNITS,  PRODUCT_ID)
+                VALUES(WH_S.nextval, 'REC', 'Receiving', qty, p_id);
+            ELSE                
+                /*It adds up the total of quantity for a product*/
+                UPDATE WAREHOUSE_INVENTORY
+                SET UNITS = (UNITS + qty)
+                WHERE P_ID = PRODUCT_ID    
+                    AND BIN LIKE 'REC'
+                    AND ZONE LIKE 'Receiving'; 
+            END IF;
+
+            UPDATE PRODUCT
+            SET total_units = (total_units + qty),
+                unit_price = unit_p
+            WHERE product_name LIKE p_name;
+
+            UPDATE PURCHASE_ORDERS
+            SET PROCESSED = 'Y';
+        END LOOP;
+    close po_cursor;
+    END;
+
+
+    PROCEDURE ADD_INCOMING_PRODUCTS(P_NUM INT, UN INT)
+    IS
+    P_NAME VARCHAR2(255) := '';
+    P_ID NUMBER := 0;
+    BEGIN
+        P_NAME := GET_PART_NAME(P_NUM);
+        P_ID := GET_PRODUCT_ID(P_NAME);
+
+        IF P_ID != 0 THEN
+            INSERT INTO WAREHOUSE_INVENTORY(WH_ID, PRODUCT_ID, UNITS, BIN, ZONE)
+            VALUES(WH_S.nextval, P_ID, UN, 'REC', 'Receiving');
+        END IF;
+    END;
+
+    PROCEDURE STOCK_PRODUCT(P_ID INT, B_NAME VARCHAR2, Z_NAME VARCHAR2, UN INT)
+    IS
+    p_count NUMBER := 0;
+    BEGIN
+    IF PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS(B_NAME, Z_NAME) = 0 THEN
+        RETURN;
+    END IF;
+    p_count:=CHECK_PRODUCT_ON_ZONE(P_ID, B_NAME, Z_NAME);
+        IF p_count > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('Area has product id already');
+            UPDATE WAREHOUSE_INVENTORY
+            SET UNITS = (UNITS + UN)
+            WHERE P_ID = PRODUCT_ID 
+                AND B_NAME LIKE BIN        
+                AND Z_NAME LIKE ZONE;
+        ELSE
+            INSERT INTO WAREHOUSE_INVENTORY(WH_ID, PRODUCT_ID, BIN, ZONE, UNITS)
+            VALUES(WH_S.nextval, P_ID, B_NAME, Z_NAME, UN);
+        END IF;
+    END;
+
+    PROCEDURE MOVE_PRODUCT(P_ID INT, OLD_BIN VARCHAR2, OLD_ZONE VARCHAR2, UN INT, 
+        NEW_BIN VARCHAR2, NEW_ZONE VARCHAR2)
+    IS
+    p_count NUMBER := 0;
+    BEGIN
+    IF PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS(NEW_BIN, NEW_ZONE) = 0 THEN
+        RETURN;
+    END IF;
+
+    p_count := CHECK_PRODUCT_ON_ZONE(P_ID, OLD_BIN, OLD_ZONE); 
+        IF UN <= p_count THEN
+            UPDATE WAREHOUSE_INVENTORY
+            SET UNITS = (UNITS - UN)
+            WHERE P_ID = PRODUCT_ID 
+                AND OLD_BIN LIKE BIN        
+                AND OLD_ZONE LIKE ZONE;
+            STOCK_PRODUCT(P_ID, NEW_BIN, NEW_ZONE, UN);
+        END IF;
+    PACKAGE_WAREHOUSE_INVENTORY.update_zone_counts;
+    END;
+
+
+    PROCEDURE UPDATE_ZONE_COUNTS
+    IS
+    BEGIN
+    DELETE FROM WAREHOUSE_INVENTORY
+    WHERE UNITS = 0;
+    END;
+
+END;
