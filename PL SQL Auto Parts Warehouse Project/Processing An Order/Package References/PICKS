@@ -1,0 +1,130 @@
+create or replace PACKAGE PACKAGE_PICKS
+AS
+    PROCEDURE CREATE_NEW_PICK(O_ID INT);
+    PROCEDURE GET_BIN_AND_ZONE_LOCATION(P_ID INT, BIN_NAME OUT WAREHOUSE_INVENTORY.BIN%TYPE, ZONE_NAME OUT WAREHOUSE_INVENTORY.ZONE%TYPE);
+    FUNCTION PRODUCT_ID_EXISTS(O_ID INT, P_ID INT) RETURN NUMBER;
+    PROCEDURE REMOVE_ORDER_PICK(O_ID INT);
+    PROCEDURE PROCESS_PICKS(P_ID NUMBER, EMP_ID NUMBER, BIN_LOC APPROVED_ZONE.BIN%TYPE, ZONE_LOC APPROVED_ZONE.ZONE%TYPE, TOTE_BIN APPROVED_ZONE.BIN%TYPE, TOTE_ZONE APPROVED_ZONE.ZONE%TYPE);
+END PACKAGE_PICKS;
+
+create or replace PACKAGE BODY PACKAGE_PICKS
+AS
+
+    PROCEDURE CREATE_NEW_PICK(O_ID INT)
+    IS
+    B_LOC WAREHOUSE_INVENTORY.BIN%TYPE := '';
+    Z_LOC WAREHOUSE_INVENTORY.ZONE%TYPE := '';
+    PICK_ID INT;
+
+    CURSOR order_cursor IS
+        SELECT PRODUCT_ID, QUANTITY
+        FROM CUSTOMER_ORDERS
+        WHERE ORDER_ID = O_ID
+            AND CONFIRMED = 'Y';
+
+    p_id CUSTOMER_ORDERS.PRODUCT_ID%TYPE;
+    qty CUSTOMER_ORDERS.QUANTITY%TYPE;
+
+
+    BEGIN
+    OPEN order_cursor;
+        LOOP
+            FETCH order_cursor
+            INTO p_id, qty;
+
+            EXIT WHEN order_cursor%notfound;
+            FOR I IN 1..qty
+                LOOP
+                    PACKAGE_PICKS.GET_BIN_AND_ZONE_LOCATION(P_ID, B_LOC, Z_LOC);
+                    IF B_LOC = ' ' OR Z_LOC = ' ' THEN
+                        RETURN;
+                    ELSE
+                        PICK_ID := PICKS_SEQ.nextval;
+                        INSERT INTO PICKS(ID, ORDER_ID, PRODUCT_ID, QUANTITY, BIN_LOCATION, ZONE_LOCATION)
+                        VALUES(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC);
+
+                        PACKAGE_ORDER_LIST.ADD_PRODUCT_TO_ORDER_LIST(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC);
+                    END IF;
+                    B_LOC := ' ';
+                    Z_LOC := ' ';
+                END LOOP;
+        END LOOP;
+    close order_cursor;
+    END;
+
+    PROCEDURE PROCESS_PICKS(P_ID NUMBER, EMP_ID NUMBER, BIN_LOC APPROVED_ZONE.BIN%TYPE, ZONE_LOC APPROVED_ZONE.ZONE%TYPE, TOTE_BIN APPROVED_ZONE.BIN%TYPE, TOTE_ZONE APPROVED_ZONE.ZONE%TYPE)
+    IS
+    ROW_ID PICKS.ID%TYPE;
+    O_ID PICKS.ORDER_ID%TYPE;
+    BEGIN
+        SELECT ID, ORDER_ID
+        INTO ROW_ID, O_ID
+        FROM PICKS
+        WHERE PRODUCT_ID = P_ID
+            AND BIN_LOCATION LIKE BIN_LOC
+            AND ZONE_LOCATION LIKE ZONE_LOC
+            AND PICK_STATUS LIKE 'N' 
+            AND ROWNUM = 1;
+
+        UPDATE PICKS
+        SET EMPLOYEE_ID = EMP_ID,
+            PICK_STATUS = 'Y',
+            TIME_PICKED = SYSDATE
+        WHERE ID= ROW_ID;
+
+        DBMS_OUTPUT.PUT_LINE(ROW_ID);
+        DBMS_OUTPUT.PUT_LINE(O_ID);
+
+        DBMS_OuTPut.PUT_LINE('Moved to Grey');
+        PACKAGE_ORDER_LIST.MOVE_PRODUCT_TO_NEW_PLACE(ROW_ID, O_ID, P_ID, 1, BIN_LOC, ZONE_LOC, TOTE_BIN, TOTE_ZONE);
+
+        EXCEPTION
+        WHEN no_data_found THEN
+            DBMS_OUTPUT.PUT_LINE('No Pick Item Found');
+    END;
+
+
+    /* 
+        P_ID := 1
+        BIN_NAME := ' '
+        ZONE_NAME := ' '
+    */
+    PROCEDURE GET_BIN_AND_ZONE_LOCATION(P_ID INT, BIN_NAME OUT WAREHOUSE_INVENTORY.BIN%TYPE, ZONE_NAME OUT WAREHOUSE_INVENTORY.ZONE%TYPE)
+    IS
+    CURSOR p_cursor IS
+        SELECT BIN, ZONE
+        FROM WAREHOUSE_INVENTORY
+        WHERE PRODUCT_ID = P_ID
+        ORDER BY BIN, ZONE;
+
+    BEGIN
+    OPEN p_cursor;
+        LOOP
+            FETCH p_cursor
+            INTO BIN_NAME, ZONE_NAME;
+            EXIT;
+
+        END LOOP;
+    close p_cursor;
+    END;
+
+    FUNCTION PRODUCT_ID_EXISTS(O_ID INT, P_ID INT)
+    RETURN NUMBER
+    IS
+    total_count NUMBER;
+    BEGIN
+        SELECT COUNT(PRODUCT_ID)
+        INTO total_count
+        FROM PICKS
+        WHERE PRODUCT_ID = P_ID
+            AND ORDER_ID = O_ID;
+        RETURN NVL(total_count, 0);
+    END;
+
+    PROCEDURE REMOVE_ORDER_PICK(O_ID INT)
+    IS
+    BEGIN
+    DELETE FROM PICKS
+    WHERE ORDER_ID = O_ID;
+    END;
+END;
