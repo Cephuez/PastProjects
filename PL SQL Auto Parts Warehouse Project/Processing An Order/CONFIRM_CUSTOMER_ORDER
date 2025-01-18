@@ -50,7 +50,7 @@ OPEN order_cursor;
         FOR I IN 1..qty
             LOOP
                 DBMS_OUTPUT.PUT_LINE('Process Order');
-                PACKAGE_PICKS.GET_BIN_AND_ZONE_LOCATION(P_ID, B_LOC, Z_LOC); -- Line 72
+                PACKAGE_PICKS.GET_BIN_AND_ZONE_LOCATION(P_ID, B_LOC, Z_LOC); -- Line 71
                 IF B_LOC = ' ' OR Z_LOC = ' ' THEN
                     RETURN;
                 ELSE
@@ -58,7 +58,7 @@ OPEN order_cursor;
                     INSERT INTO PICKS(ID, ORDER_ID, PRODUCT_ID, QUANTITY, BIN_LOCATION, ZONE_LOCATION)
                     VALUES(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC);
 
-                    PACKAGE_ORDER_LIST.ADD_PRODUCT_TO_ORDER_LIST(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC);
+                    PACKAGE_ORDER_LIST.ADD_PRODUCT_TO_ORDER_LIST(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC); -- Line 113
                 END IF;
                 B_LOC := ' ';
                 Z_LOC := ' ';
