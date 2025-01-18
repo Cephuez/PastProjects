@@ -1,0 +1,121 @@
+PROCEDURE CONFIRM_CUSTOMER_ORDER(O_ID INT)
+IS
+CHECK_DATE DATE;
+BEGIN
+SELECT ORDER_DATE 
+INTO CHECK_DATE
+FROM ORDERS 
+WHERE ORDER_ID = O_ID;
+IF CHECK_DATE IS NULL THEN -- This is to avoid multiple confirmation of the same order.
+    UPDATE CUSTOMER_ORDERS
+    SET CONFIRMED = 'Y'
+    WHERE ORDER_ID = O_ID;
+
+    UPDATE ORDERS
+    SET ORDER_DATE = SYSDATE
+    WHERE ORDER_ID = O_ID;
+
+    PACKAGE_PICKS.CREATE_NEW_PICK(O_ID); -- Line 24
+END IF;
+END;
+
+----------------------------------------------------------------------------------------------------------------------------------------
+/*
+* This will look through the warehouse and check where the parts are located
+* It will use a cursor to loop through Order to find the product id before
+* Searching for the parts in the warehouse
+*/
+PROCEDURE CREATE_NEW_PICK(O_ID INT)
+IS
+B_LOC WAREHOUSE_INVENTORY.BIN%TYPE := '';
+Z_LOC WAREHOUSE_INVENTORY.ZONE%TYPE := '';
+PICK_ID INT;
+
+CURSOR order_cursor IS
+    SELECT PRODUCT_ID, QUANTITY
+    FROM CUSTOMER_ORDERS
+    WHERE ORDER_ID = O_ID
+        AND CONFIRMED = 'Y';
+
+p_id CUSTOMER_ORDERS.PRODUCT_ID%TYPE;
+qty CUSTOMER_ORDERS.QUANTITY%TYPE;
+
+BEGIN
+OPEN order_cursor;
+    LOOP
+        FETCH order_cursor
+        INTO p_id, qty;
+
+        EXIT WHEN order_cursor%notfound;
+        FOR I IN 1..qty
+            LOOP
+                DBMS_OUTPUT.PUT_LINE('Process Order');
+                PACKAGE_PICKS.GET_BIN_AND_ZONE_LOCATION(P_ID, B_LOC, Z_LOC); -- Line 72
+                IF B_LOC = ' ' OR Z_LOC = ' ' THEN
+                    RETURN;
+                ELSE
+                    PICK_ID := PICKS_SEQ.nextval;
+                    INSERT INTO PICKS(ID, ORDER_ID, PRODUCT_ID, QUANTITY, BIN_LOCATION, ZONE_LOCATION)
+                    VALUES(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC);
+
+                    PACKAGE_ORDER_LIST.ADD_PRODUCT_TO_ORDER_LIST(PICK_ID, O_ID, P_ID, 1, B_LOC, Z_LOC);
+                END IF;
+                B_LOC := ' ';
+                Z_LOC := ' ';
+            END LOOP;
+    END LOOP;
+close order_cursor;
+END;
+
+---------------------------------------------------------------------------
+/*
+* This will look in the warehouse inventory and return back Bin and Zone locations for the product id
+*/
+
+PROCEDURE GET_BIN_AND_ZONE_LOCATION(P_ID INT, BIN_NAME OUT WAREHOUSE_INVENTORY.BIN%TYPE, ZONE_NAME OUT WAREHOUSE_INVENTORY.ZONE%TYPE)
+IS
+PICK_QTY NUMBER;
+WH_PRODUCT_QTY NUMBER;
+CURSOR p_cursor IS
+    SELECT BIN, ZONE
+    FROM WAREHOUSE_INVENTORY
+    WHERE PRODUCT_ID = P_ID
+    ORDER BY BIN, ZONE;
+
+BEGIN
+OPEN p_cursor;
+    LOOP
+        FETCH p_cursor
+        INTO BIN_NAME, ZONE_NAME;
+
+        -- The following will check if a part is already reserved for another order
+        -- This prevents the same product from being selected more than once
+        SELECT SUM(UNITS)
+        INTO PICK_QTY
+        FROM ORDER_LIST
+        WHERE BIN = BIN_NAME AND ZONE = ZONE_NAME
+            AND PRODUCT_ID = P_ID;
+            
+        SELECT SUM(UNITS)
+        INTO WH_PRODUCT_QTY
+        FROM WAREHOUSE_INVENTORY
+        WHERE BIN = BIN_NAME AND ZONE = ZONE_NAME
+            AND PRODUCT_ID = P_ID;
+        IF(NVL(WH_PRODUCT_QTY,0) - NVL(PICK_QTY,0)) > 0 THEN
+            EXIT;
+        END IF;
+
+    END LOOP;
+close p_cursor;
+END;
+
+--------------------------------------------------------------------
+/*
+* The product parts will be added into the Order List Table and keep track of any movements mades into these parts
+*/
+PROCEDURE ADD_PRODUCT_TO_ORDER_LIST(PICK_ID INT, O_ID INT, P_ID INT, UN INT, LOC_BIN ORDER_LIST.BIN%TYPE, LOC_ZONE ORDER_LIST.ZONE%TYPE)
+IS
+BEGIN
+INSERT INTO ORDER_LIST(ID, ORDER_ID, PRODUCT_ID, UNITS, BIN, ZONE)
+VALUES(PICK_ID, O_ID, P_ID, UN, LOC_BIN, LOC_ZONE);
+END;
