@@ -1,0 +1,13 @@
+PROCEDURE ADD_PRODUCT_TO_ORDER(O_ID INT, P_ID INT, QTY INT)
+IS
+BEGIN
+IF ROW_EXISTS(O_ID, P_ID) = 0 THEN -- If it's a new product, then it will insert it into the CUSTOMER_ORDERS Table
+    INSERT INTO CUSTOMER_ORDERS(ID, ORDER_ID, PRODUCT_ID, QUANTITY)
+    VALUES(CUSTOMER_ORDERS_SEQ.nextval, O_ID, P_ID, QTY);
+ELSE -- Otherwise, it will update the quantity to avoid multiple rows of the same product
+    UPDATE CUSTOMER_ORDERS
+    SET QUANTITY = QUANTITY + QTY
+    WHERE ORDER_ID = O_ID
+        AND PRODUCT_ID = P_ID;
+END IF;
+END;
