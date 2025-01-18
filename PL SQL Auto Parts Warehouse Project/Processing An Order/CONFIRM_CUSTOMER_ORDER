@@ -49,7 +49,6 @@ OPEN order_cursor;
         EXIT WHEN order_cursor%notfound;
         FOR I IN 1..qty
             LOOP
-                DBMS_OUTPUT.PUT_LINE('Process Order');
                 PACKAGE_PICKS.GET_BIN_AND_ZONE_LOCATION(P_ID, B_LOC, Z_LOC); -- Line 71
                 IF B_LOC = ' ' OR Z_LOC = ' ' THEN
                     RETURN;
