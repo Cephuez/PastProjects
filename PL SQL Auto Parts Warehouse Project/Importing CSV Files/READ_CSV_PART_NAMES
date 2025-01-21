@@ -1,0 +1,48 @@
+/*
+* This will read the IMPORT_NEW_PRODUCTS table and only add products 
+* into the table if they are new
+*/
+PROCEDURE READ_CSV_PART_NAMES
+IS
+CURSOR csv_cursor IS
+    SELECT SUPPLIER_ID, PART_NUMBER, PRODUCT_NAME, UNIT_PRICE
+    FROM IMPORT_NEW_PRODUCTS;
+
+s_id IMPORT_NEW_PRODUCTS.SUPPLIER_ID%TYPE;
+p_num IMPORT_NEW_PRODUCTS.PART_NUMBER%TYPE;
+pro_name IMPORT_NEW_PRODUCTS.PRODUCT_NAME%TYPE;
+price IMPORT_NEW_PRODUCTS.UNIT_PRICE%TYPE;
+
+is_true NUMBER;
+BEGIN
+open csv_cursor;
+    LOOP
+        FETCH csv_cursor
+        INTO s_id, p_num, pro_name, price;
+        EXIT WHEN csv_cursor%notfound;
+        is_true := CHECK_REPEATED_PART_NUMBER(P_NUM); <----- Line 29
+        IF is_true = 0 THEN
+            INSERT INTO PRODUCT_PART_NAMES(P_ID, SUPPLIER_ID, PART_NUMBER, PRODUCT_NAME, UNIT_PRICE)
+            VALUES(P_NAMES.nextval, s_id, p_num, pro_name, price);
+        END IF;
+    END LOOP;
+close csv_cursor;     
+END;
+
+---------------------------------------------------------------------
+/*
+* If the part has already been added into the table, then it will skip this entry
+* to avoid duplicates.
+*/
+FUNCTION CHECK_REPEATED_PART_NUMBER(P_NUM VARCHAR2)
+RETURN NUMBER
+IS
+is_added NUMBER := 0;
+BEGIN
+    SELECT COUNT(PART_NUMBER)
+    INTO is_added
+    FROM PRODUCT_PART_NAMES
+    WHERE PART_NUMBER LIKE P_NUM;
+
+    RETURN nvl(is_added,0);
+END;
