@@ -1,0 +1,90 @@
+PROCEDURE FINALIZE_ORDER(EMP_ID INT, O_ID NUMBER)
+IS
+CURSOR order_cursor IS
+    SELECT ORDER_LIST.PRODUCT_ID, ORDER_LIST.UNITS, ORDER_LIST.ID
+    FROM ORDER_LIST
+    JOIN ORDERS
+        ON ORDER_LIST.ORDER_ID = ORDERS.ORDER_ID
+    WHERE ORDER_LIST.ORDER_ID = O_ID
+        AND ORDERS.SHIP_DATE IS NULL;
+
+P_ID ORDER_LIST.PRODUCT_ID%TYPE;
+P_UNITS ORDER_LIST.UNITS%TYPE;
+ROW_ID ORDER_LIST.ID%TYPE;
+NEW_ZONE_NAME APPROVED_ZONE.ZONE%TYPE;
+NEW_BIN_MADE BOOLEAN := FALSE;
+
+BEGIN
+OPEN order_cursor;      
+    LOOP
+        FETCH order_cursor
+        INTO P_ID, P_UNITS, ROW_ID;
+        EXIT WHEN order_cursor%NOTFOUND;
+        
+        IF NEW_BIN_MADE = FALSE THEN
+            NEW_ZONE_NAME := 'FINAL ' || GET_NEW_FINAL_ZONE;
+            
+            INSERT INTO APPROVED_ZONE
+            VALUES('FINAL', NEW_ZONE_NAME);
+            
+            NEW_BIN_MADE := TRUE;
+        END IF;
+
+        UPDATE ORDER_LIST
+        SET BIN = 'FINAL',
+            ZONE = NEW_ZONE_NAME 
+        WHERE ROW_ID = ID;
+    END LOOP;
+
+    -- Updates the Orders table that the order has been shipped
+    UPDATE ORDERS
+    SET EMPLOYEE_ID = EMP_ID,
+        SHIP_DATE = SYSDATE
+    WHERE ORDER_ID = O_ID;
+    
+    REMOVE_SHIPPED_ITEMS_FROM_WAREHOUSE(O_ID);
+
+CLOSE order_cursor;
+END;
+
+---------------------------------------------------------------------
+/*
+* It will remove the shipped items from the warehouse inventory
+*/
+PROCEDURE REMOVE_SHIPPED_ITEMS_FROM_WAREHOUSE(O_ID INT)
+IS
+CURSOR SHIPPED_ITEM_CURSOR IS
+    SELECT BIN_LOCATION, ZONE_LOCATION, QUANTITY
+    FROM PICKS
+    WHERE ORDER_ID = O_ID;
+    
+BIN_LOC ORDER_LIST.BIN%TYPE;
+ZONE_LOC ORDER_LIST.ZONE%TYPE;
+QTY  ORDER_LIST.UNITS%TYPE;
+BEGIN
+OPEN SHIPPED_ITEM_CURSOR;
+    LOOP
+        FETCH SHIPPED_ITEM_CURSOR
+        INTO BIN_LOC, ZONE_LOC, QTY;
+        EXIT WHEN SHIPPED_ITEM_CURSOR%NOTFOUND;
+
+        UPDATE WAREHOUSE_INVENTORY
+        SET UNITS = UNITS - QTY
+        WHERE BIN = BIN_LOC
+            AND ZONE = ZONE_LOC;
+            
+        PACKAGE_WAREHOUSE_INVENTORY.UPDATE_ZONE_COUNTS; <-- Line 82
+    END LOOP;
+CLOSE SHIPPED_ITEM_CURSOR;
+END;
+
+---------------------------------------------------------------------
+/*
+* Removes any zones where there is 0 units of the product in it
+*/
+PROCEDURE UPDATE_ZONE_COUNTS
+IS
+BEGIN
+DELETE FROM WAREHOUSE_INVENTORY
+WHERE UNITS = 0;
+END;
