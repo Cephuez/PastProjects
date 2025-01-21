@@ -1,0 +1,16 @@
+/*
+* This will return me a view of all the items for an order that are ready to be finalized to be shipped
+* It makes sure that all parts are in BIN STAGE or in COMP. They will remaine here in here until they have been shipped
+*/
+
+CREATE OR REPLACE VIEW ORDERS_READY
+AS
+SELECT OL.ORDER_ID, OL.PRODUCT_ID, OL.BIN, OL.ZONE, OL.UNITS QUANTITY
+FROM ORDER_LIST OL
+WHERE OL.ORDER_ID NOT IN(
+    SELECT ORDER_ID
+    FROM ORDER_LIST OL2
+    WHERE OL2.BIN != 'STAGE' AND OL2.BIN != 'COMP'
+        AND OL2.ORDER_ID = OL.ORDER_ID
+)
+WITH CHECK OPTION;
