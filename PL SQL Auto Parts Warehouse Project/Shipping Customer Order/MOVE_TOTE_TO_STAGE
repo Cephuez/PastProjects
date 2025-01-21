@@ -1,0 +1,111 @@
+/*
+* This will move the part from its tote location to the staging area
+*/ 
+
+PROCEDURE MOVE_TOTE_TO_STAGE(EMP_ID INT, TOTE_BIN APPROVED_ZONE.BIN%TYPE, TOTE_ZONE APPROVED_ZONE.ZONE%TYPE)
+IS
+CURSOR tote_cursor IS
+    SELECT PRODUCT_ID, UNITS
+    FROM WAREHOUSE_INVENTORY
+    WHERE TOTE_BIN LIKE BIN AND TOTE_ZONE LIKE ZONE;
+
+tote_product_id WAREHOUSE_INVENTORY.PRODUCT_ID%TYPE;
+tote_units WAREHOUSE_INVENTORY.UNITS%TYPE;
+
+new_bin APPROVED_ZONE.BIN%TYPE := 'STAGE';
+new_zone APPROVED_BIN.BIN%TYPE := 'STAGE_001';
+BEGIN
+OPEN tote_cursor;
+    LOOP
+        FETCH tote_cursor
+        INTO tote_product_id, tote_units;
+        EXIT WHEN tote_cursor%notfound;
+        MOVE_PRODUCT(tote_product_id, TOTE_BIN, TOTE_ZONE, tote_units, new_bin, new_zone);
+    END LOOP;
+CLOSE tote_cursor;    
+END;
+
+----------------------------------------------------------------------------------------------
+PROCEDURE MOVE_PRODUCT(P_ID INT, OLD_BIN VARCHAR2, OLD_ZONE VARCHAR2, UN INT, 
+    NEW_BIN VARCHAR2, NEW_ZONE VARCHAR2)
+IS
+p_count NUMBER := 0;
+BEGIN
+IF PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS(NEW_BIN, NEW_ZONE) = 0 THEN
+    RETURN;
+END IF;
+
+p_count := CHECK_PRODUCT_ON_ZONE(P_ID, OLD_BIN, OLD_ZONE);   <--- Line 70
+    IF UN <= p_count THEN
+        UPDATE WAREHOUSE_INVENTORY
+        SET UNITS = (UNITS - UN)
+        WHERE P_ID = PRODUCT_ID 
+            AND OLD_BIN LIKE BIN        
+            AND OLD_ZONE LIKE ZONE;
+        STOCK_PRODUCT(P_ID, NEW_BIN, NEW_ZONE, UN);  <--- Line 89
+    END IF;
+PACKAGE_WAREHOUSE_INVENTORY.update_zone_counts;
+END;
+
+--------------------------------------------------
+/*
+* This will return if the bin/zone names have already been approved by the system.
+*/
+FUNCTION BIN_AND_ZONE_EXISTS(BIN_NAME VARCHAR2, ZONE_NAME VARCHAR2)
+RETURN NUMBER
+IS
+BIN_EXISTS NUMBER:= 0;
+ZONE_EXISTS NUMBER:= 0;
+DOES_EXISTS NUMBER:= 0;
+BEGIN
+    SELECT COUNT(UNIQUE(BIN)), COUNT(ZONE)
+    INTO BIN_EXISTS, ZONE_EXISTS
+    FROM APPROVED_ZONE
+    WHERE BIN_NAME LIKE BIN
+        AND ZONE LIKE ZONE_NAME;
+    DOES_EXISTS := NVL(BIN_EXISTS,0) * NVL(ZONE_EXISTS,0);
+    RETURN DOES_EXISTS;
+END;
+
+----------------------------------------------------
+/*
+* It will check for total amount of units for the product in the zone location
+*/
+create or replace FUNCTION CHECK_PRODUCT_ON_ZONE(P_ID INT, B_NAME VARCHAR2, Z_NAME VARCHAR2)
+RETURN NUMBER
+IS
+p_count NUMBER := 0;
+BEGIN
+    SELECT SUM(UNITS)
+    INTO p_count
+    FROM WAREHOUSE_INVENTORY
+    WHERE P_ID = PRODUCT_ID
+        AND B_NAME LIKE BIN        
+        AND Z_NAME LIKE ZONE;
+
+    RETURN nvl(p_count,0);
+END;
+
+-----------------------------------------------------
+/*
+* This will insert the product into the the warehouse for its new location
+*/
+PROCEDURE STOCK_PRODUCT(P_ID INT, B_NAME VARCHAR2, Z_NAME VARCHAR2, UN INT)
+IS
+p_count NUMBER := 0;
+BEGIN
+IF PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS(B_NAME, Z_NAME) = 0 THEN 
+    RETURN;
+END IF;
+p_count:=CHECK_PRODUCT_ON_ZONE(P_ID, B_NAME, Z_NAME);
+    IF p_count > 0 THEN
+        UPDATE WAREHOUSE_INVENTORY
+        SET UNITS = (UNITS + UN)
+        WHERE P_ID = PRODUCT_ID 
+            AND B_NAME LIKE BIN        
+            AND Z_NAME LIKE ZONE;
+    ELSE
+        INSERT INTO WAREHOUSE_INVENTORY(WH_ID, PRODUCT_ID, BIN, ZONE, UNITS)
+        VALUES(WH_S.nextval, P_ID, B_NAME, Z_NAME, UN);
+    END IF;
+END;
