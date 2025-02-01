@@ -13,6 +13,21 @@ input_command.read_command()
 
 
 '''
+TODOs
+1. When prompted, ask the user for their username and password
+2. Once logged in, show the commands avaialable for the user.
+    - Start Picking
+    - Stage Items
+    - Process Orders
+    - Move Parts
+    - Process Receiving Items
+3. Special inputs
+    - Exit = Leave Window
+
+
+'''
+
+'''
 # connect to oracle database
 cs = "(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1522)) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orclpdb)))"
 connection=oracledb.connect( user="project", password= "password123", dsn= cs)
