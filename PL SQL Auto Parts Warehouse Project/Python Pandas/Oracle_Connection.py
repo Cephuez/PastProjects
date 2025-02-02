@@ -8,7 +8,8 @@ from sqlalchemy import create_engine
 query = "1";
 input_command = command("Class")
 input_command.print()
-input_command.log_in()
+input_command.log_in() #-- Assume user has already logged in
+# input_command.read_command()
 input_command.read_command()
 
 

@@ -13,7 +13,7 @@ class command:
         self.name = name
 
     def print(self):
-        print("Yo What's up")
+        print("Application Started")
 
     '''
     For the sake of debugging, I will have the username and password already put in correctly
@@ -28,11 +28,59 @@ class command:
         self.engine = create_engine('oracle+oracledb://', creator=lambda: self.connection)
 
     def read_command(self):
+        command = ""
         #query = input("Do Something")
-        query = "SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME FROM EMPLOYEES ORDER BY 1"
-        df = pd.read_sql(query, self.engine)
+        #query = "SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME FROM EMPLOYEES ORDER BY 1"
+        #df = pd.read_sql(query, self.engine)
         # test data prep
-        df_test = df.copy()
+        #df_test = df.copy()
         # export test DataFrame with pandas to_sql
+        #df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
+        #print(df)
+        print("1. Start Picking")
+        print("2. Stage Items")
+        print("3. Process Orders")
+        print("4. Move Parts")
+        print("5. Process Receiving Items")
+        print("0. Exit Program")
+        while(command != "0"):
+            command = input("Enter your Command")
+            if(command == "1"):
+                self.picking_command()
+                print("Now Picking")
+            elif(command == "2"):
+                print("Stage Items")
+            elif(command == "3"):
+                print("Process Orders")
+            elif(command == "4"):
+                print("Move Parts")
+            elif(command == "5"):
+                print("Process Receiving Items")
+            elif(command == "0"):
+                print("Closing Program")
+
+    def picking_command(self):
+        command = ""
+        query = "SELECT ORDER_ID FROM ORDERS WHERE ORDER_DATE IS NOT NULL AND SHIP_DATE IS NULL ORDER BY ORDER_DATE"
+        df = pd.read_sql(query, self.engine)
+        df_test = df.copy()
         df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
         print(df)
+        while(command != '0'):
+            command = input("Enter Order ID to Pick: ")
+            # Redirect user to the the next window where they will now pick the parts
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
