@@ -44,7 +44,8 @@ class command:
         print("5. Process Receiving Items")
         print("0. Exit Program")
         while(command != "0"):
-            command = input("Enter your Command")
+            #command = input("Enter your Command: ")
+            command = "1"
             if(command == "1"):
                 self.picking_command()
                 print("Now Picking")
@@ -58,6 +59,7 @@ class command:
                 print("Process Receiving Items")
             elif(command == "0"):
                 print("Closing Program")
+            command = "0"
 
     def picking_command(self):
         command = ""
@@ -67,8 +69,59 @@ class command:
         df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
         print(df)
         while(command != '0'):
-            command = input("Enter Order ID to Pick: ")
+            #command = input("Enter Order ID to Pick: ")
+            command = "16"
+            query = "SELECT ORDER_ID, PRODUCT_ID, SUM(QUANTITY), BIN_LOCATION, ZONE_LOCATION " \
+                    "FROM SIMPLE_PICK WHERE ORDER_ID = 16 GROUP BY ORDER_ID, PRODUCT_ID, BIN_LOCATION, ZONE_lOCATION " \
+                    "ORDER BY BIN_LOCATION"
+            df = pd.read_sql(query, self.engine)
+            df_test = df.copy()
+            df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
+            #query_result = df.split()
+
+            product_id = df.iat[0,1]
+            print(df)
+            #print(product_id)
+            #print(bin_loc)
+            #print(zone_loc)
+            len_x = int(df.size / 5)
+            while(command != '0'):
+                for x in range(len_x):
+                    bin_loc = df.iat[x,3]
+                    print("Bin : " +bin_loc)
+                print("Choose Bin to Pick: B")
+
+                # When you choose location, you will be prompted to enter a valid tote location
+                # This will be the location that the item will be placed at
+                query = "SELECT PRODUCT_ID, QUANTITY, BIN_lOCATION, ZONE_LOCATION FROM SIMPLE_PICK WHERE ORDER_ID = 16 " \
+                        "AND BIN_LOCATION = 'B'"
+                df = pd.read_sql(query, self.engine)
+                df_test = df.copy()
+                df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
+
+                print(df)
+                # Make sure that you are in the bin/zone location
+                # Make sure you scan the correct product id
+                # Enter the quantity
+                # Check the the entered values are valid
+                # Run the procedure
+                # EXECUTE PACKAGE_PICKS.PROCESS_PICKS(emp_id, order_id, Bin, Zone, Tote_Bin, Bin_Toe, Quantity
+                command = "0"
+            command = "0"
             # Redirect user to the the next window where they will now pick the parts
+
+    def staging_parts(self):
+        command = ""
+        query = ""
+        print("Scan Tote")
+        while(command != '0'):
+            print("asd")
+            command = "0"
+
+    def process_order(self):
+        command = ""
+        query = "SELECT ORDER_ID FROM ORDERS WHERE ORDER_DATE IS NOT NULL AND SHIP_DATE IS NULL ORDER BY ORDER_DATE"
+            
             
 
 
