@@ -32,14 +32,6 @@ class command:
 
     def read_command(self):
         command = ""
-        #query = input("Do Something")
-        #query = "SELECT EMPLOYEE_ID, FIRST_NAME, LAST_NAME FROM EMPLOYEES ORDER BY 1"
-        #df = pd.read_sql(query, self.engine)
-        # test data prep
-        #df_test = df.copy()
-        # export test DataFrame with pandas to_sql
-        #df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
-        #print(df)
         print("1. Start Picking")
         print("2. Stage Items")
         print("3. Process Orders")
@@ -47,8 +39,8 @@ class command:
         print("5. Process Receiving Items")
         print("0. Exit Program")
         while(command != "0"):
-            #command = input("Enter your Command: ")
-            command = "1"
+            command = input("Enter your Command: ")
+            #command = "1"
             if(command == "1"):
                 print("Picking List")
                 self.picking_command()
@@ -62,6 +54,8 @@ class command:
                 print("Process Receiving Items")
             elif(command == "0"):
                 print("Closing Program")
+            else:
+                print("Wrong Input")
             command = "0"
 
     def picking_command(self):
@@ -70,7 +64,7 @@ class command:
         df = pd.read_sql(query, self.engine)
         df_test = df.copy()
         df_test.to_sql('test', con = self.engine, if_exists='replace', index=False)
-        print(df)
+
         # Prompt user what order_id to pick
         bin_picked = self.pick_bin_from_list()
         self.pick_parts(bin_picked)
@@ -95,8 +89,8 @@ class command:
     def pick_parts(self, bin_picked):
         # When you choose location, you will be prompted to enter a valid tote location
         # This will be the location that the item will be placed at
-        #tote_name = input("Enter Tote Location: ")
-        tote_name = "PICK GREY_TOTE_100"
+        tote_name = input("Enter Tote Location: ")
+        #tote_name = "PICK GREY_TOTE_100"
         tote_bin, tote_zone = tote_name.split(' ', 1)
 
         query = "SELECT DISTINCT ZONE_lOCATION FROM PICKS WHERE BIN_LOCATION = '"+bin_picked+"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION"
@@ -105,15 +99,11 @@ class command:
         list_loop = 0
         zone_loop = 0
         while list_loop != zone_location_list_df.size:
-            #order_id = df.iat[list_loop,0]
-            #product_id = df.iat[list_loop,1]
-            #quantity = df.iat[list_loop,2]
-            #bin_loc = df.iat[list_loop,3]
             zone_loc = zone_location_list_df.iat[list_loop,0]
             query = "SELECT ORDER_ID, PRODUCT_ID, QUANTITY, ZONE_LOCATION FROM PICKS " \
                     "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION, ORDER_ID"
             zone_list_df = pd.read_sql(query, self.engine)
-            print(zone_list_df)
+            #print(zone_list_df)
             #print(zone_list_df.size)
             print("Go to Area: " + zone_loc)
             input_loc = input("Scan Location: ")
@@ -131,36 +121,8 @@ class command:
             else:
                 print("Wrong Location")
 
-            print("------------------")
-            zone_loop = 0           
-            
-            #print(zone_loc)
+            zone_loop = 0                       
             list_loop += 1
-            '''
-            print("Go to Area: " + bin_loc + " " + zone_loc)
-            input_loc = input("Scan Location: ")
-            input_bin, input_zone = input_loc.split(' ', 1)
-
-            if(bin_loc == input_bin and zone_loc == input_zone):
-                print("Correct Location")
-                self.scan_parts(product_id, bin_loc, zone_loc, tote_bin, tote_zone)
-            else:
-                print("Wrong Location")  '''          
-
-
-        
-        # print(str(product_id) + " " + str(quantity) + " " + str(bin_loc) + " " + str(zone_loc))
-        # Prompt user here to scan the location
-        
-
-        '''   
-        # EXECUTE PACKAGE_PICKS.PROCESS_PICKS(emp_id, order_id, Bin, Zone, Tote_Bin, Bin_Toe, Quantity  
-        
-        # Make sure you scan the correct product id
-        # Enter the quantity
-        # Check the the entered values are valid
-        # Run the procedure
-        # Redirect user to the the next window where they will now pick the parts'''
         
     def scan_parts(self, product_id, bin_loc, zone_loc, tote_bin, tote_zone):
         print("Product ID: " + str(product_id))
@@ -172,7 +134,7 @@ class command:
             query = "BEGIN PACKAGE_PICKS.PROCESS_PICKS(" + str(product_id) + ", 1, '" + bin_loc + "', '" + zone_loc + \
                 "', '" + tote_bin + "', '" + tote_zone +"'); commit; END;"
             result = cursor.execute(query)
-            print(query)
+            #print(query)
         else:
             print("Part Not Correct")
         
