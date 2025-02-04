@@ -39,8 +39,8 @@ class command:
         print("5. Process Receiving Items")
         print("0. Exit Program")
         while(command != "0"):
-            command = input("Enter your Command: ")
-            #command = "2"
+            #command = input("Enter your Command: ")
+            command = "3"
             if(command == "1"):
                 print("Picking List")
                 self.picking_command()
@@ -49,6 +49,7 @@ class command:
                 self.staging_parts()
             elif(command == "3"):
                 print("Process Orders")
+                self.process_orders()
             elif(command == "4"):
                 print("Move Parts")
             elif(command == "5"):
@@ -59,6 +60,57 @@ class command:
                 print("Wrong Input")
             command = "0"
 
+
+    def process_orders(self): 
+        print("XD")
+        while(True):
+            get_orders_query = "SELECT DISTINCT(ORDER_ID) FROM ORDERS_READY ORDER BY ORDER_ID"
+            all_order_list = pd.read_sql(get_orders_query, self.engine)
+            print("Orders Ready To Be Processed")
+            for i in range(all_order_list.size):
+                print("Order ID: " + str(all_order_list.iat[i,0]))
+
+            #order_id = input("Pick Order ID: ")
+            order_id = 15
+            print("Pick Order ID: "+ str(order_id))
+
+            #comp_box = input("Scan Order Box: ")
+            comp_box = "ORDER_TOTE_00005"
+            print("Scan Order Box: " + comp_box)
+            get_order_list_query = "SELECT DISTINCT ZONE FROM ORDERS_READY WHERE ORDER_ID = "+str(order_id)+" ORDER BY ZONE"
+            order_list = pd.read_sql(get_order_list_query, self.engine)
+            print(order_list)
+
+            
+            for i in range(order_list.size):
+                while(True):
+                    zone_loc = order_list.iat[i,0]
+                    print("Go to Zone: " + zone_loc)
+                    zone_scanned = input("Scan Zone: ").upper()
+                    if(zone_loc == zone_scanned):
+                        print("Correct Zone")
+                        self.move_to_process(order_id, zone_loc, comp_box)
+                        break
+                    else:
+                        print("Incorrect Zone")
+                
+
+    def move_to_process(self, order_id, zone_loc, comp_box):
+        #print("Move the parts to process")
+        query = "SELECT PRODUCT_ID, QUANTITY FROM ORDERS_READY WHERE ZONE = '"+ zone_loc +"'"
+        stage_list = pd.read_sql(query, self.engine)
+        for i in range(int(stage_list.size / 2)):
+            while(True):
+                print("Scan Product: " + str(stage_list.iat[i,0]))
+                part_scanned = input("Part: ")
+                if(part_scanned == str(stage_list.iat[i,0])):
+                    print("Correct Part Scanned")
+                    break
+                else:
+                    print("Wrong part Scanned")
+            
+            #print("Scan Part: " + str(stage_list.iat[i,0]))
+        print(stage_list)
     '''
         The user will scan the tote which will allow the worker to move the parts from the
         box to the shelfs(Stage)
