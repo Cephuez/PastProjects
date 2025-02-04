@@ -84,8 +84,9 @@ class command:
                 # Continue rest of procedure here
                 print("Stuff in tote")
                 self.move_to_staging(tote_zone)
+                print(tote_zone + " now empty")
             else:
-                print("Incorrrect Tote Or Tote Is Empty")
+                print("Incorrrect Tote Or Is Empty")
 
             
             
