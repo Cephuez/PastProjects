@@ -40,12 +40,13 @@ class command:
         print("0. Exit Program")
         while(command != "0"):
             command = input("Enter your Command: ")
-            #command = "1"
+            #command = "2"
             if(command == "1"):
                 print("Picking List")
                 self.picking_command()
             elif(command == "2"):
                 print("Stage Items")
+                self.staging_parts()
             elif(command == "3"):
                 print("Process Orders")
             elif(command == "4"):
@@ -57,6 +58,73 @@ class command:
             else:
                 print("Wrong Input")
             command = "0"
+
+    '''
+        The user will scan the tote which will allow the worker to move the parts from the
+        box to the shelfs(Stage)
+    '''
+    def staging_parts(self):
+        command = ""
+        query = ""
+        #tote_name = input("Scan Tote: ")
+        tote_bin = 'PICK'
+        #tote_zone = 'GREY_TOTE_101'
+
+        while(True):
+            tote_zone = input("Scan Tote: ")
+
+            check_tote_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('PICK', '" +tote_zone+"') FROM DUAL"
+            tote_result = pd.read_sql(check_tote_query, self.engine).iat[0,0]
+
+            if(tote_result == 1):
+                check_tote_empty_query = "SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = '"+tote_zone+"'"
+                tote_empty_result = pd.read_sql(check_tote_empty_query, self.engine).iat[0,0]
+
+            if(tote_result == 1 and tote_empty_result > 0):
+                # Continue rest of procedure here
+                print("Stuff in tote")
+                self.move_to_staging(tote_zone)
+            else:
+                print("Incorrrect Tote Or Tote Is Empty")
+
+            
+            
+            query = "SELECT PRODUCT_ID FROM ORDER_LIST " +\
+                    "WHERE BIN = 'PICK' AND ZONE = '"+tote_zone+"' ORDER BY PRODUCT_ID"
+
+    '''
+        The code will run procedure PACKAGE_ORDER_LIST.MOVE_TOTE_TO_STAGE, to move the parts from their box
+        to the staging shelfs.
+    '''
+    def move_to_staging(self, tote_zone):
+        query = "SELECT PRODUCT_ID FROM ORDER_LIST " +\
+                "WHERE BIN = 'PICK' AND ZONE = '"+tote_zone+"' ORDER BY PRODUCT_ID"
+        product_list = pd.read_sql(query, self.engine)
+        for x in range(product_list.size):
+            print("Need Product: " + str(product_list.iat[x,0]))
+            while(True):
+                part_scanned = input("Scan Part: ")
+                if(part_scanned == str(product_list.iat[x,0])):
+                    while(True):
+                        stage_scanned = input("Scan Stage Area: ").upper()
+                        check_stage_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('STAGE', '" +stage_scanned+"') FROM DUAL"
+                        stage_result = pd.read_sql(check_stage_query, self.engine).iat[0,0]
+
+                        # If staging area is correct, then move the part to its new location
+                        if(stage_result == 1):
+                            #print("Valid Stage Area")
+                            # Employee id will remain 1 for now
+                            query = "BEGIN " + \
+                                    "PACKAGE_ORDER_LIST.MOVE_TOTE_TO_STAGE("+str(part_scanned)+", 1, 'PICK', '"+tote_zone+"', 'STAGE', '"+stage_scanned+"'); " + \
+                                    "commit; END;"
+                            cursor = self.connection.cursor()
+                            result = cursor.execute(query)
+                            break
+                        else:
+                            print("Incorrect Stage")
+                    break
+                else:
+                    print("Incorrect Part Scanned")
 
     def picking_command(self):
         command = ""
@@ -137,14 +205,7 @@ class command:
             #print(query)
         else:
             print("Part Not Correct")
-        
-    def staging_parts(self):
-        command = ""
-        query = ""
-        print("Scan Tote")
-        while(command != '0'):
-            print("asd")
-            command = "0"
+
 
     def process_order(self):
         command = ""
