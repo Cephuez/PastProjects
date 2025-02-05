@@ -1,8 +1,5 @@
-For this part, I'll be using Python and and Pandas, a data analysis library, that will allow me to interact with my database from Oracle. 
-Ths goal is to program an application that allows the user to interact with the database by inputting information as if they are working.
-I will use my previous implementation to allow the worker to
-  1. Log in into their account
-  2. Move products around the warehouse
-  3. Processing orders by picking them from the shelf
-  4. Completing the order once all the parts are collected.
+The purpose of this application is to allow the worker to sign in into their devices to complete their tasks. That means providing
+a simple promp request that will tell each worker what they want to do. From there the worker will decide what they want to do
+like picking parts, staging parts, or gather parts to process an order.
 
+Most of my code is written in "Input_Command.py". Each implementation specifies what functions were used.
