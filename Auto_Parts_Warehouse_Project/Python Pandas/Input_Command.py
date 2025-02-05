@@ -63,28 +63,27 @@ class command:
             else:
                 print("Wrong Input")
             command = "0"
-
-
+    
+    '''
+        Allows the user to pick the parts for an order only if they are all staged.
+        From here they will transfer those items to a final tote
+    '''
     def gather_parts(self): 
         while(True):
             get_orders_query = "SELECT DISTINCT(ORDER_ID) FROM ORDERS_READY ORDER BY ORDER_ID"
             all_order_list = pd.read_sql(get_orders_query, self.engine)
             print("Orders Ready To Be Processed")
-            for i in range(all_order_list.size):
+            
+            # Loops through all orders that ready to be processed
+            for i in range(all_order_list.size):       
                 print("Order ID: " + str(all_order_list.iat[i,0]))
 
             order_id = input("Pick Order ID: ")
-            #order_id = 15
-            #print("Pick Order ID: "+ str(order_id))
-
             comp_box = input("Scan Order Box: ")
-            #comp_box = "ORDER_TOTE_00005"
-            #print("Scan Order Box: " + comp_box)
             get_order_list_query = "SELECT DISTINCT ZONE FROM ORDERS_READY WHERE ORDER_ID = "+str(order_id)+" ORDER BY ZONE"
             order_list = pd.read_sql(get_order_list_query, self.engine)
-            #print(order_list)
 
-            
+            # Loops through the order list and request the user to move to the product's stage location
             for i in range(order_list.size):
                 while(True):
                     zone_loc = order_list.iat[i,0]
@@ -96,10 +95,15 @@ class command:
                         break
                     else:
                         print("Incorrect Zone")
-                
 
+    
+    '''
+        The user will begin moving their parts to the tote one at a time.
+        They will continue to do this until all parts have been scanned
+    '''
     def move_parts_to_process(self, order_id, zone_loc, comp_box):
-        #print("Move the parts to process")
+
+        # Display product id and quantity from currently available at the stage location
         query = "SELECT PRODUCT_ID, QUANTITY FROM ORDERS_READY WHERE ZONE = '"+ zone_loc +"' AND ORDER_ID = " + order_id
         stage_list = pd.read_sql(query, self.engine)
         for i in range(int(stage_list.size / 2)):
@@ -108,6 +112,8 @@ class command:
                 part_scanned = input("Part: ")
                 if(part_scanned == str(stage_list.iat[i,0])):
                     # Employee ID will remain 1 for now
+
+                    # Execute procedure to move the part to the tote
                     query = "BEGIN " + \
                             "PACKAGE_ORDERS.MOVE_STAGE_TO_BOX("+str(order_id)+", "+part_scanned+", 1, 'STAGE', '"+zone_loc+"', 'COMP', '"+comp_box+"');" +\
                             "commit; END;"
@@ -125,34 +131,31 @@ class command:
         box to the shelfs(Stage)
     '''
     def staging_parts(self):
-        command = ""
-        query = ""
-        #tote_name = input("Scan Tote: ")
+        #command = ""
+        #query = ""
         tote_bin = 'PICK'
-        #tote_zone = 'GREY_TOTE_101'
 
         while(True):
             tote_zone = input("Scan Tote: ")
 
+            # Check if the inputted tote name is incorrect
             check_tote_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('PICK', '" +tote_zone+"') FROM DUAL"
             tote_result = pd.read_sql(check_tote_query, self.engine).iat[0,0]
 
+            # Check if the inputted tote name has at least 1 part in it.
             if(tote_result == 1):
                 check_tote_empty_query = "SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = '"+tote_zone+"'"
                 tote_empty_result = pd.read_sql(check_tote_empty_query, self.engine).iat[0,0]
 
             if(tote_result == 1 and tote_empty_result > 0):
                 # Continue rest of procedure here
-                print("Stuff in tote")
+                print("Parts in tote")
                 self.move_to_staging(tote_zone)
                 print(tote_zone + " now empty")
             else:
                 print("Incorrrect Tote Or Is Empty")
-
-            
-            
-            query = "SELECT PRODUCT_ID FROM ORDER_LIST " +\
-                    "WHERE BIN = 'PICK' AND ZONE = '"+tote_zone+"' ORDER BY PRODUCT_ID"
+                
+            #query = "SELECT PRODUCT_ID FROM ORDER_LIST " +\       "WHERE BIN = 'PICK' AND ZONE = '"+tote_zone+"' ORDER BY PRODUCT_ID"
 
     '''
         The code will run procedure PACKAGE_ORDER_LIST.MOVE_TOTE_TO_STAGE, to move the parts from their box
