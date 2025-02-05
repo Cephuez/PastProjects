@@ -15,6 +15,7 @@ class command:
     def print(self):
         print("Application Started")
 
+    #localhost:1522/orclpdb
     '''
     For the sake of debugging, I will have the username and password already put in correctly
             #df = pd.read_sql(query, self.engine)
@@ -54,8 +55,11 @@ class command:
                 print("Move Parts")
             elif(command == "5"):
                 print("Process Receiving Items")
+            elif(command == "6"):
+                print("Complete Order")
             elif(command == "0"):
                 print("Closing Program")
+                break
             else:
                 print("Wrong Input")
             command = "0"
