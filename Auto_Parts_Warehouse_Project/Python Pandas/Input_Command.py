@@ -38,6 +38,8 @@ class command:
         print("3. Gather Order Parts")
         print("4. Move Parts")
         print("5. Process Receiving Items")
+        print("6. Process Order")
+        print("7. Look Product's Location")
         print("0. Exit Program")
         while(command != "0"):
             command = input("Enter your Command: ")
