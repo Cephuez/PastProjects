@@ -270,12 +270,7 @@ class command:
             #print(query)
         else:
             print("Part Not Correct")
-
-
-    def process_order(self):
-        command = ""
-        query = "SELECT ORDER_ID FROM ORDERS WHERE ORDER_DATE IS NOT NULL AND SHIP_DATE IS NULL ORDER BY ORDER_DATE"
-            
+           
             
 
 
