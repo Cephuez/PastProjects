@@ -221,6 +221,11 @@ class command:
             command = "0"
         return bin_picked.upper()
 
+
+    '''
+        Fix how the tote is read. Just read 'GREY_TOTE_XXX' instead of 'PICK GREY_TOTE_XXX'
+        I don't need the pick at the beginning
+    '''
     def pick_parts(self, bin_picked):
         # When you choose location, you will be prompted to enter a valid tote location
         # This will be the location that the item will be placed at

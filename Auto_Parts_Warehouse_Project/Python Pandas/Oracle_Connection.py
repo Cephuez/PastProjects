@@ -1,16 +1,19 @@
 import oracledb
 import pandas as pd
 from Input_Command import command
+from Data_Generator import code_generator
 
 from sqlalchemy import create_engine
 
 
-query = "1";
-input_command = command("Class")
-input_command.print()
-input_command.log_in() #-- Assume user has already logged in for debugging purpose
-# input_command.read_command()
-input_command.read_command()
+query = "1"
+generator = code_generator("Name")
+generator.log_in()
+generator.generate_orders()
+#input_command = command("Class")
+#input_command.print()
+#input_command.log_in() #-- Assume user has already logged in for debugging purpose
+#input_command.read_command()
 
 
 
