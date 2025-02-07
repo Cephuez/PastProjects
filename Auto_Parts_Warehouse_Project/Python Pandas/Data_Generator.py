@@ -22,7 +22,61 @@ class code_generator:
 
 
     def genrate_order_dates(self):
-        print("xd")
+        cursor = self.connection.cursor()
+        # Jan 24 - 28 Day
+        # 'DD-01-2025 10:10:45'
+        # 06:00:00 - 20:00:00
+        jan_day_list = [24,25,26,27,28]
+        feb_day_list = [3,4,5,6,7]
+        cursor = self.connection.cursor()
+
+        # 002-100 - Jan 24 2025
+        #   - 002-010 : 08:00:00 - 08:59:59
+        #   - 011-020 : 09:00:00 - 09:59:59
+        #   - 021-030 : 10:00:00 - 10:59:59
+        # 101-200 - Jan 25 2025
+        # 201-300 - Jan 26 2025
+        # etc
+        # Generate 10 orders for every hour
+        for x in range(3,8):
+            day = str(x)
+            hundredth = 5 + x - 3
+            for y in range(9,19):
+                old_minute = -1
+                old_second = -1
+                hour = str(y)
+                tenth = y - 9
+                for i in range(0,10):
+                    order_id = i + (10 * tenth) + (100 * hundredth)
+
+                    # 0, 10
+                    # 5, 15
+                    # 10, 20
+                    if(order_id > 1):
+                        while(True):
+                            if(old_minute == 59):
+                                break
+                            generate_minute = random.randint(i*5,i*5+10)
+                            if(old_minute <= generate_minute):
+                                break
+                        while(True):
+                            if(old_second == 59):
+                                break
+                            generate_second = random.randint(i*5,i*5+10)
+                            if(old_second <= generate_second):
+                                break
+                        date = ""+day+"-02-2025 "+ ""+hour+":"+str(generate_minute)+":"+str(generate_second)+""
+
+                        query = "UPDATE ORDERS SET ORDER_DATE = TO_DATE('"+date+"', 'DD-MM-YYYY HH24:MI:SS') WHERE ORDER_ID = " +str(order_id)
+                        
+                        old_minute = generate_minute
+                        old_second = generate_second
+
+                        #print(query)
+                        result = cursor.execute(query)
+                        #result = pd.read_sql(query, self.engine)
+                        self.connection.commit()
+                        #print(query)
 
 
     def generate_orders(self):
