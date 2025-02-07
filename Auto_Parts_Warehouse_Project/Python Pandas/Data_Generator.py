@@ -26,6 +26,20 @@ class code_generator:
         # Jan 24 - 28 Day
         # 'DD-01-2025 10:10:45'
         # 06:00:00 - 20:00:00
+
+        print("Enter 'Y' for Yes")
+
+        # Added a lot of check statements so I don't accidently add more code than usual
+        input_command = input("You want to generate? ")
+        if(input_command != 'Y'):
+            exit(0)
+        input_command = input("Are you sure? ")
+        if(input_command != 'Y'):
+            exit(0)
+        input_command = input("Last check?: ")
+        if(input_command != 'Y'):
+            exit(0)
+            
         jan_day_list = [24,25,26,27,28]
         feb_day_list = [3,4,5,6,7]
         cursor = self.connection.cursor()
