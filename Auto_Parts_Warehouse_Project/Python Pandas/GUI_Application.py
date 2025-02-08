@@ -58,6 +58,9 @@ class gui_application:
         #print("Password: "+ entry2.get())
         #print("Test")
 
+    def check_input():
+        print("as")
+
     def load_bin_pick_view(self, bin_picked):
         self.pick_frame.destroy()
         self.zone_list_i = 0
@@ -93,9 +96,28 @@ class gui_application:
 
         display_location = bin_loc + " " +zone_loc
         self.bin_pick_frame_label_5 = customtkinter.CTkLabel(master=self.bin_pick_frame, text=display_location, font=("Roboto", 20)).pack(pady=2, padx=10)
+
+        self.bin_pick_frame_entry1 = customtkinter.CTkEntry(master=self.frame2)
+        self.bin_pick_frame_entry1.pack(pady=12, padx=10)
+        self.bin_pick_frame_entry1.bind('<Return>', self.check_input)
         
         raise_frame(self.bin_pick_frame)
 
+
+    def input_pick_tote(self):
+        self.pick_frame.destroy()
+
+        self.tote_pick_frame = customtkinter.CTkFrame(master = self.root)
+        self.tote_pick_frame.pack(pady=30, padx=10)
+
+        self.tote_pick_frame_label_1 = customtkinter.CTkLabel(master=self.tote_pick_frame, text="Scan Tote", font=("Roboto", 34)).pack(pady=30, padx=10)
+
+        self.tote_pick_entry_1 = customtkinter.CTkEntry(master=self.tote_pick_frame).pack(pady=12, padx=10)
+        
+        raise_frame(self.tote_pick_frame)
+        
+
+        
     def check_picking_view(self, event):
         bin_picked = self.pick_frame_entry_1.get().upper()
         #print("Entry: " + bin_picked)
@@ -106,7 +128,8 @@ class gui_application:
         for i in range(0,int(self.pick_list.size/2)):
             if(str(self.pick_list.iat[i,0]) == bin_picked):
                 #print("Correct Input")
-                self.load_bin_pick_view(bin_picked)
+                self.input_pick_tote()
+                #self.load_bin_pick_view(bin_picked)
 
         
     def load_picking_view(self):
@@ -216,41 +239,6 @@ class gui_application:
 
         raise_frame(self.frame1)
         self.root.mainloop()
-
-        '''
-        print("1. Start Picking")
-        print("2. Stage Items")
-        print("3. Gather Order Parts")
-        print("4. Move Parts")
-        print("5. Process Receiving Items")
-        print("6. Process Order")
-        print("7. Look Product's Location")
-        print("0. Exit Program")
-        while(command != "0"):
-            command = input("Enter your Command: ")
-            #command = "3"
-            if(command == "1"):
-                print("Picking List")
-                self.picking_command()
-            elif(command == "2"):
-                print("Stage Items")
-                self.staging_parts()
-            elif(command == "3"):
-                print("Gather Order Parts")
-                self.gather_parts()
-            elif(command == "4"):
-                print("Move Parts")
-            elif(command == "5"):
-                print("Process Receiving Items")
-            elif(command == "6"):
-                print("Complete Order")
-            elif(command == "0"):
-                print("Closing Program")
-                break
-            else:
-                print("Wrong Input")
-            command = "0"
-        '''
 
 def raise_frame(frame):
     frame.tkraise()
