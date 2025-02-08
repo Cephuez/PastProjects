@@ -2,6 +2,7 @@ import oracledb
 import pandas as pd
 from Input_Command import command
 from Data_Generator import code_generator
+from GUI_Application import gui_application
 
 from sqlalchemy import create_engine
 
@@ -11,10 +12,15 @@ query = "1"
 #generator.log_in()
 #generator.genrate_order_dates()
 #generator.generate_orders()
-input_command = command("Class")
-input_command.print()
-input_command.log_in() #-- Assume user has already logged in for debugging purpose
-input_command.read_command()
+#input_command = command("Class")
+#input_command.print()
+#input_command.log_in() #-- Assume user has already logged in for debugging purpose
+#input_command.read_command()
+
+gui = gui_application("Name")
+gui.print()
+gui.log_in()
+gui.beginning_screen()
 
 
 
