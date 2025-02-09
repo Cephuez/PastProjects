@@ -68,6 +68,13 @@ class gui_application:
         self.product_zone_list = pd.read_sql(query, self.engine)
 
         #order_id = self.product_zone_list.iat[0,0]
+        print(self.product_zone_list)
+        print(self.product_zone_list.size)
+        if(self.product_zone_list.size == 0):
+            #return back to
+            self.go_to_zone_location(self.pick_frame)
+            print("Go back")
+        
         product_id = self.product_zone_list.iat[0,0]
         qty = self.product_zone_list.iat[0,1]
         zone_loc = self.product_zone_list.iat[0,2]
@@ -89,6 +96,8 @@ class gui_application:
         
     def check_product(self,event):
         input_product_id = self.bin_pick_frame_entry1.get()
+        input_qty = self.bin_pick_frame_qty_entry.get()
+
         product_id = self.product_zone_list.iat[self.zone_list_i,0]
         zone_loc = self.zone_loc
         bin_loc = zone_loc[0]
@@ -96,15 +105,22 @@ class gui_application:
         print(input_product_id)
         print(product_id)
         if(str(input_product_id) == str(product_id)):
-            cursor = self.connection.cursor()
-            print("Correct Part Scanned")
-            query = "BEGIN PACKAGE_PICKS.PROCESS_PICKS(" + str(product_id) + ", 1, '" + bin_loc + "', '" + zone_loc + \
-                "', 'PICK', '" + tote_zone +"'); commit; END;"
-            result = cursor.execute(query)
-            self.update_product_view()
+            query = "SELECT PACKAGE_PICKS.CHECK_QUANTITY_INPUT("+str(product_id)+", "+str(input_qty)+", '"+bin_loc+"', '"+zone_loc+"') FROM DUAL"
+            qty_result = pd.read_sql(query, self.engine).iat[0,0]
+            if(qty_result == 1):            
+                cursor = self.connection.cursor()
+                print("Correct Part Scanned")
+                query = "BEGIN PACKAGE_PICKS.PROCESS_PICKS(" + str(product_id) + ", 1, "+str(input_qty)+", '" + bin_loc + "', '" + zone_loc + \
+                    "', 'PICK', '" + tote_zone +"'); commit; END;"
+                result = cursor.execute(query)
+                self.update_product_view()
             
         size = len(input_product_id)
         self.bin_pick_frame_entry1.delete(0,size)
+        size = len(input_qty)
+        self.bin_pick_frame_qty_entry.delete(0,size)
+        self.bin_pick_frame_qty_entry.insert(0, '1')
+        
         
     # bin_name = self.bin_picked
     # zone_name = zone_loc
@@ -164,6 +180,7 @@ class gui_application:
         self.bin_pick_frame_qty_entry = customtkinter.CTkEntry(master=self.bin_pick_frame, justify='center')
         self.bin_pick_frame_qty_entry.insert(0, '1')
         self.bin_pick_frame_qty_entry.pack(pady=4, padx=10)
+        self.bin_pick_frame_qty_entry.bind('<Return>', self.check_product)
         self.bin_pick_frame_qty_entry.configure(state='disabled')
 
         self.root.bind('<F5>', self.enable_qty_input)
@@ -192,8 +209,11 @@ class gui_application:
             self.go_to_frame_entry_1.delete(0,size)
             
 
-    def go_to_zone_location(self):
-        self.tote_pick_frame.destroy()
+    def go_to_zone_location(self, other_frame):
+        if(other_frame is None):
+            self.tote_pick_frame.destroy()
+        else:
+            print("Remove Frame")
 
         self.go_to_frame = customtkinter.CTkFrame(master = self.root)
         self.go_to_frame.pack(pady=30, padx=10)
@@ -235,7 +255,7 @@ class gui_application:
             tote_empty_result = pd.read_sql(check_tote_empty_query, self.engine).iat[0,0]
 
         if(tote_result == 1 and tote_empty_result > 0):
-            self.go_to_zone_location()
+            self.go_to_zone_location(None)
         else:
             size = len(tote_zone)
             self.tote_pick_frame_tote_entry_1.delete(0,size)
