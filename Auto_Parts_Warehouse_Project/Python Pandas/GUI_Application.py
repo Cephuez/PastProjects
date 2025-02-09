@@ -65,6 +65,7 @@ class gui_application:
         # If it's correct, then move the part to the staging area
             # Then run load_stage_product_view
             # Go back to product_view because maybe not all parts could fit in stage shelf
+        # IMPORTANT: You will work on F3 shortcut to exit current windows.
         
     def load_product_info(self,other_frame):
         if(other_frame is None):
