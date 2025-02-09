@@ -3,9 +3,8 @@ import pandas as pd
 import customtkinter
 import tkinter
 from sqlalchemy import create_engine
-from GUI_Picking_Parts import Picking_Parts_Window
 
-class gui_application:
+class Picking_Parts_Window:
     engine = ""
     cs = ""
     connection = ""
@@ -15,49 +14,11 @@ class gui_application:
     #entry1 = ""
 
 
-    def __init__(self, name):
+    def __init__(self, name, engine, root, frame2):
         self.name = name
-        self.root = tkinter.Tk()
-        customtkinter.set_appearance_mode("Dark")
-        customtkinter.set_default_color_theme("dark-blue")
-
-        self.root = customtkinter.CTk()
-        self.root.geometry("500x450")
-
-    def print(self):
-        print("GUI Application Started")
-
-    def log_in(self):
-        #self.user_name = input("User Name: ")
-        #self.password = input("Password: ")
-        user_name = "Project"
-        password = "password123"
-        cs = "(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1522)) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orclpdb)))"
-        self.connection = oracledb.connect( user=user_name, password= password, dsn= cs)
-        self.engine = create_engine('oracle+oracledb://', creator=lambda: self.connection)
-
-    def login(self):
-        #user_name = self.f1_entry1.get()
-        #password = self.f1_entry2.get()
-        #print("Username: " + user_name)
-        #print("Password: " + password)
-
-        self.display_command_window()
-
-        '''
-        try:
-            cs = "(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1522)) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orclpdb)))"
-            self.connection = oracledb.connect( user=user_name, password= password, dsn= cs)
-            self.engine = create_engine('oracle+oracledb://', creator=lambda: self.connection)
-            print("Connected")
-            self.display_command_window()
-            
-        except:
-            print("Log in incorrect")
-        '''
-        #print("Username: "+ entry1.get())
-        #print("Password: "+ entry2.get())
-        #print("Test")
+        self.engine = engine
+        self.root = root
+        self.frame2 = frame2
 
     def update_product_view(self):
         zone_loc = self.zone_loc
@@ -347,27 +308,18 @@ class gui_application:
         self.pick_frame_entry_1.bind('<Return>', self.check_picking_view)        
         
         raise_frame(self.pick_frame)
-
-    ## From here, you will launch seperate classes to handle each window
+        
     def check_input(self, event):
         input_num = self.f2_entry1.get()
         #print("Entry: " + input_num)
         size = len(input_num)
         self.f2_entry1.delete(0,size)
         if(input_num == '1'):
-            Picking_Window = Picking_Parts_Window("Name", self.engine, self.root, self.frame2)
-            Picking_Window.load_picking_view(None)
-            #self.load_picking_view(None)
+            self.load_picking_view(None)
+        
+
             
     def display_command_window(self):
-        #print("1. Start Picking")
-        #print("2. Stage Items")
-        #print("3. Gather Order Parts")
-        #print("4. Move Parts")
-        #print("5. Process Receiving Items")
-        #print("6. Process Order")
-        #print("7. Look Product's Location")
-        #print("0. Exit Program")
         self.frame1.destroy()
         self.frame2 = customtkinter.CTkFrame(master = self.root)
         self.frame2.pack(pady=20, padx=10, fill="y", expand=True)
