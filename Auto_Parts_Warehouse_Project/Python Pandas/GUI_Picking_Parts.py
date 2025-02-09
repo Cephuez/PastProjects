@@ -10,6 +10,7 @@ from sqlalchemy import create_engine
     1. Make sure you can return back to the previous class. You will need to return the current frame when exiting windows
     2. Allow the user to change totes. There's a chance it can be filled all the way to the top
     3. Add the shortcuts onto the screen. 'F5' to allow quantity. 'F3' to exit from the window, etc
+    4. Check for 'self.root.bind('<F5>', self.enable_qty_input)'. There's a chance this will carry over for other windows.
 '''
 
 class Picking_Parts_Window:
