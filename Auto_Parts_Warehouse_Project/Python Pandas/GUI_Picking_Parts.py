@@ -4,6 +4,14 @@ import customtkinter
 import tkinter
 from sqlalchemy import create_engine
 
+
+'''
+    TODO:
+    1. Make sure you can return back to the previous class. You will need to return the current frame when exiting windows
+    2. Allow the user to change totes. There's a chance it can be filled all the way to the top
+    3. Add the shortcuts onto the screen. 'F5' to allow quantity. 'F3' to exit from the window, etc
+'''
+
 class Picking_Parts_Window:
     engine = ""
     cs = ""
@@ -14,11 +22,13 @@ class Picking_Parts_Window:
     #entry1 = ""
 
 
-    def __init__(self, name, engine, root, frame2):
+    def __init__(self, name, connection, engine, root, frame2):
         self.name = name
+        self.connection = connection
         self.engine = engine
         self.root = root
         self.frame2 = frame2
+
 
     def update_product_view(self):
         zone_loc = self.zone_loc
@@ -308,78 +318,7 @@ class Picking_Parts_Window:
         self.pick_frame_entry_1.bind('<Return>', self.check_picking_view)        
         
         raise_frame(self.pick_frame)
-        
-    def check_input(self, event):
-        input_num = self.f2_entry1.get()
-        #print("Entry: " + input_num)
-        size = len(input_num)
-        self.f2_entry1.delete(0,size)
-        if(input_num == '1'):
-            self.load_picking_view(None)
-        
-
-            
-    def display_command_window(self):
-        self.frame1.destroy()
-        self.frame2 = customtkinter.CTkFrame(master = self.root)
-        self.frame2.pack(pady=20, padx=10, fill="y", expand=True)
-
-        self.f2_label_1 = customtkinter.CTkLabel(master=self.frame2, text="Command List", font=("Roboto", 34))
-        self.f2_label_1.pack(pady=30, padx=10)
-
-        self.f2_entry1 = customtkinter.CTkEntry(master=self.frame2)
-        self.f2_entry1.pack(pady=12, padx=10)
-        self.f2_entry1.bind('<Return>', self.check_input)
-
-        self.f2_label_2 = customtkinter.CTkLabel(master=self.frame2, text="1. Start Picking", font=("Roboto", 20), justify="left")
-        self.f2_label_2.pack(pady=1, padx=10)
-
-        self.f2_label_3 = customtkinter.CTkLabel(master=self.frame2, text="2. Stage Items", font=("Roboto", 20))
-        self.f2_label_3.pack(pady=1, padx=10)
-
-        self.f2_label_4 = customtkinter.CTkLabel(master=self.frame2, text="3. Gather Order Parts", font=("Roboto", 20))
-        self.f2_label_4.pack(pady=1, padx=10)
-
-        self.f2_label_5 = customtkinter.CTkLabel(master=self.frame2, text="4. Move Parts", font=("Roboto", 20))
-        self.f2_label_5.pack(pady=1, padx=10)
-
-        self.f2_label_6 = customtkinter.CTkLabel(master=self.frame2, text="5. Process Receiving Items", font=("Roboto", 20))
-        self.f2_label_6.pack(pady=1, padx=10)
-
-        self.f2_label_7 = customtkinter.CTkLabel(master=self.frame2, text="6. Process Order", font=("Roboto", 20))
-        self.f2_label_7.pack(pady=1, padx=10)
-
-        self.f2_label_8 = customtkinter.CTkLabel(master=self.frame2, text="7. Search Product's Location", font=("Roboto", 20))
-        self.f2_label_8.pack(pady=1, padx=1)
-
-        self.f2_label_9 = customtkinter.CTkLabel(master=self.frame2, text="8. Log Out", font=("Roboto", 20))
-        self.f2_label_9.pack(pady=1, padx=1)
-        
-        
-        raise_frame(self.frame2)
-        
-    def beginning_screen(self):
-        command = ""
-        self.frame1 = customtkinter.CTkFrame(master = self.root)
-        self.frame1.pack(pady=20, padx=60, fill="both", expand=True)
-
-        self.f1_label = customtkinter.CTkLabel(master=self.frame1, text="Login  System", font=("Roboto", 24))
-        self.f1_label.pack(pady=12, padx=10)
-
-        self.f1_entry1 = customtkinter.CTkEntry(master=self.frame1, placeholder_text="Username")
-        self.f1_entry1.pack(pady=12, padx=10)
-
-        self.f1_entry2 = customtkinter.CTkEntry(master=self.frame1, placeholder_text="Password")
-        self.f1_entry2.pack(pady=12, padx=10)
-
-        self.f1_button = customtkinter.CTkButton(master=self.frame1, text="Login", command = self.login)
-        self.f1_button.pack(pady=12, padx=10)
-
-        #checkbox = customtkinter.CTkCheckBox(master=frame, text="Remember Me")
-        #checkbox.pack(pady=12, padx=10)
-
-        raise_frame(self.frame1)
-        self.root.mainloop()
-
+     
 def raise_frame(frame):
     frame.tkraise()
+            
