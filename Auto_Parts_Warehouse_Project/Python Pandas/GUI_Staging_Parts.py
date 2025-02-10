@@ -18,9 +18,6 @@ class Staging_Parts_Window:
         self.engine = engine
         self.root = root
         self.frame2 = frame2
-        
-    def raise_frame(frame):
-        frame.tkraise()
 
     def stage_part(self, event):
         print("Check Part")
@@ -186,4 +183,7 @@ class Staging_Parts_Window:
         self.tote_name_entry.bind('<Return>', self.check_tote_item_list)
 
         raise_frame(self.staging_view_frame)
+
         
+def raise_frame(frame):
+    frame.tkraise()
