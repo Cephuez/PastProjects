@@ -58,11 +58,102 @@ class gui_application:
         '''
         #print("Username: "+ entry1.get())
         #print("Password: "+ entry2.get())
-        #print("Test") 
+        #print("Test")
 
+    def load_staging_view(self, other_frame):
+        if(other_frame is None):
+            self.scan_box_frame.destroy()
+        else:
+            self.other_frame.destroy()
+
+        self.staging_view_frame = customtkinter.CTkFrame(master = self.root)
+        self.staging_view_frame.pack(pady=30, padx=10)
+
+        stage_display = "Scan Stage: "
+        self.staging_view_display_stage = customtkinter.CTkLabel(master=self.staging_view_frame, text=stage_display, font=("Roboto", 34))
+        self.staging_view_display_stage.pack(pady=30, padx=10)
+
+        raise_frame(self.staging_view_frame)
+        
+
+    def check_input_box(self, event):
+        self.box_tote = self.scan_box_entry.get()
+
+        print(self.box_tote)
+        query = "SELECT COUNT(*) FROM APPROVED_ZONE WHERE ZONE = '"+self.box_tote+"'"
+        tote_exists = pd.read_sql(query, self.engine).iat[0,0]
+
+        query = "SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = '"+self.box_tote+"'"
+        empty_tote = pd.read_sql(query, self.engine).iat[0,0]
+
+        print(tote_exists)
+        print(empty_tote)
+        if(int(tote_exists) == 1 and int(empty_tote) == 0):
+            print("Change")
+            self.load_staging_view(None)
+            
+        
+    def load_input_box_view(self, other_frame):
+        if(other_frame is None):
+            self.gather_parts_frame.destroy()
+        else:
+            other_frame.destory()
+
+        self.scan_box_frame = customtkinter.CTkFrame(master = self.root)
+        self.scan_box_frame.pack(pady=30, padx=10)
+
+        self.scan_box_display = customtkinter.CTkLabel(master=self.scan_box_frame, text="Scan Box: ", font=("Roboto", 34))
+        self.scan_box_display.pack(pady=30, padx=10)
+
+        self.scan_box_entry = customtkinter.CTkEntry(master=self.scan_box_frame)
+        self.scan_box_entry.pack(pady=12, padx=10)
+        self.scan_box_entry.bind('<Return>', self.check_input_box)          
+        
+        #SELECT COUNT(*) FROM APPROVED_ZONE WHERE ZONE = 'ORDER_TOTE_00001'; -- If 1, then approved box
+        #SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = 'ORDER_TOTE_00001' -- If 0, then box can be used
+
+        raise_frame(self.scan_box_frame)
+
+    def check_order_id(self, event):
+        self.order_id = self.gather_parts_enter_product.get()
+
+        if(int(self.order_id) in self.order_list):
+            self.load_input_box_view(None)
+            print("Correct Order ID")
+        else:
+            print("Wrong Order ID")
 
     def load_gather_parts_view(self, other_frame):
         print("XD")
+        if(other_frame is None):
+            self.frame2.destroy()
+        else:
+            other_frame.destory()
+
+        self.order_list = []
+        self.gather_parts_frame = customtkinter.CTkFrame(master = self.root)
+        self.gather_parts_frame.pack(pady=30, padx=10)
+
+        self.gather_parts_label = customtkinter.CTkLabel(master=self.gather_parts_frame, text="Orders Ready List", font=("Roboto", 34))
+        self.gather_parts_label.pack(pady=30, padx=10)
+
+        self.gather_parts_enter_product = customtkinter.CTkEntry(master=self.gather_parts_frame)
+        self.gather_parts_enter_product.pack(pady=12, padx=10)
+        self.gather_parts_enter_product.bind('<Return>', self.check_order_id)   
+
+        get_orders_query = "SELECT DISTINCT(ORDER_ID) FROM ORDERS_READY ORDER BY ORDER_ID"
+        all_order_list = pd.read_sql(get_orders_query, self.engine)
+        list_length = all_order_list.size
+
+        for i in range(list_length):
+            if(i == 7):
+                break
+            order_id = all_order_list.iat[i,0]
+            self.order_list.append(int(order_id))
+            self.gather_parts_label = customtkinter.CTkLabel(master=self.gather_parts_frame, text="Order: " + str(order_id), font=("Roboto", 20))
+            self.gather_parts_label.pack(pady=2, padx=10)            
+
+        raise_frame(self.gather_parts_frame)
 
     '''
         This will display the views by calling separate classes
