@@ -14,12 +14,13 @@ class Gather_Parts_Window:
     #entry1 = ""
 
 
-    def __init__(self, name, connection, engine, root, frame2):
+    def __init__(self, gui_application, name, connection, engine, root, frame2):
+        self.gui_application = gui_application
         self.name = name
         self.connection = connection
         self.engine = engine
         self.root = root
-        self.frame2 = frame2
+        self.curr_frame = frame2
 
     def update_product_view(self):
         print("Update Frame")
@@ -192,16 +193,13 @@ class Gather_Parts_Window:
         else:
             print("Wrong Order ID")
 
-    def load_gather_parts_view(self, other_frame):
-        print("XD")
-        if(other_frame is None):
-            self.frame2.destroy()
-        else:
-            other_frame.destroy()
+    def load_gather_parts_view(self):
+        self.curr_frame.destroy()
 
         self.order_list = []
         self.gather_parts_frame = customtkinter.CTkFrame(master = self.root)
         self.gather_parts_frame.pack(pady=30, padx=10)
+        self.curr_frame = self.gather_parts_frame
 
         self.gather_parts_label = customtkinter.CTkLabel(master=self.gather_parts_frame, text="Orders Ready List", font=("Roboto", 34))
         self.gather_parts_label.pack(pady=30, padx=10)
@@ -223,7 +221,12 @@ class Gather_Parts_Window:
             self.gather_parts_label.pack(pady=2, padx=10)            
 
         raise_frame(self.gather_parts_frame)
-
+        
+    def exit_window(self, event):
+        self.root.unbind('<F3>', self.bind)
+        self.curr_frame.destroy()
+        self.gui_application.display_command_window()
+        
 
 def raise_frame(frame):
     frame.tkraise()
