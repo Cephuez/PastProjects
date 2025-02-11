@@ -42,14 +42,11 @@ class gui_application:
         self.connection = oracledb.connect( user=user_name, password= password, dsn= cs)
         self.engine = create_engine('oracle+oracledb://', creator=lambda: self.connection)
 
+
     def login(self):
-        #user_name = self.f1_entry1.get()
-        #password = self.f1_entry2.get()
-        #print("Username: " + user_name)
-        #print("Password: " + password)
-
         self.display_command_window()
-
+        self.log_in_frame.pack_forget()
+        
         '''
         try:
             cs = "(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = localhost)(PORT = 1522)) (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = orclpdb)))"
@@ -77,20 +74,21 @@ class gui_application:
         size = len(input_num)
         self.f2_command_entry.delete(0,size)
         if(input_num == '1'):
-            Picking_Window = Picking_Parts_Window("Name", self.connection, self.engine, self.root, self.command_list_frame)
-            Picking_Window.load_picking_view(None)
+            Picking_Window = Picking_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
+            self.root.unbind('<F3>', self.bin)
+            Picking_Window.load_picking_view()
             #self.load_picking_view(None)
         elif(input_num == '2'):
             Staging_Window = Staging_Parts_Window("Name", self.connection, self.engine, self.root, self.command_list_frame)
+            self.root.unbind('<F3>', self.bin)
             Staging_Window.load_staging_view(None)
             #self.load_staging_view(None)
         elif(input_num == '3'):
             Gather_Window = Gather_Parts_Window("Name", self.connection, self.engine, self.root, self.command_list_frame)
+            self.root.unbind('<F3>', self.bin)
             Gather_Window.load_gather_parts_view(None)
 
-    def display_command_window(self):
-        self.log_in_frame.pack_forget()
-        
+    def display_command_window(self):       
         self.command_list_frame = customtkinter.CTkFrame(self.root)
         self.command_list_frame.pack(pady=20, padx=10, fill="y", expand=True)
         self.frame_list.append(self.command_list_frame)
