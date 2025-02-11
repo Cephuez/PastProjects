@@ -79,16 +79,16 @@ class gui_application:
             Picking_Window.load_picking_view()
             #self.load_picking_view(None)
         elif(input_num == '2'):
-            Staging_Window = Staging_Parts_Window("Name", self.connection, self.engine, self.root, self.command_list_frame)
+            Staging_Window = Staging_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
             self.root.unbind('<F3>', self.bin)
-            Staging_Window.load_staging_view(None)
+            Staging_Window.load_staging_view()
             #self.load_staging_view(None)
         elif(input_num == '3'):
-            Gather_Window = Gather_Parts_Window("Name", self.connection, self.engine, self.root, self.command_list_frame)
+            Gather_Window = Gather_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
             self.root.unbind('<F3>', self.bin)
-            Gather_Window.load_gather_parts_view(None)
+            Gather_Window.load_gather_parts_view()
 
-    def display_command_window(self):       
+    def display_command_window(self):
         self.command_list_frame = customtkinter.CTkFrame(self.root)
         self.command_list_frame.pack(pady=20, padx=10, fill="y", expand=True)
         self.frame_list.append(self.command_list_frame)
