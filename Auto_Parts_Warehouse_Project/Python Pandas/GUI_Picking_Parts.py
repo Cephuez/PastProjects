@@ -42,7 +42,10 @@ class Picking_Parts_Window:
         self.product_zone_list = pd.read_sql(query, self.engine)
 
         if(self.product_zone_list.size == 0):
-            self.go_to_zone_location(self.bin_pick_frame)
+            #self.go_to_zone_location(self.bin_pick_frame)
+            self.tote_zone = ""
+            self.root.unbind('<F3>', self.bind)
+            self.go_to_zone_location()
             print("Go back")
         else:
             product_id = self.product_zone_list.iat[0,0]
@@ -57,20 +60,16 @@ class Picking_Parts_Window:
         
         
     def check_product(self,event):
-        print("Checking Tote")
-        print(self.tote_zone)
         if(self.tote_zone != ""):
-            print("Tote is okay")
             input_product_id = self.bin_pick_frame_entry1.get()
             input_qty = self.bin_pick_frame_qty_entry.get()
 
-            product_id = self.product_zone_list.iat[self.zone_list_i,0]
+            product_id = self.product_zone_list.iat[0,0]
             zone_loc = self.zone_loc
             bin_loc = self.bin_picked
             tote_zone = self.tote_zone
             if(str(input_product_id) == str(product_id)):
                 query = "SELECT PACKAGE_PICKS.CHECK_QUANTITY_INPUT("+str(product_id)+", "+str(input_qty)+", '"+bin_loc+"', '"+zone_loc+"') FROM DUAL"
-                print(query)
                 qty_result = pd.read_sql(query, self.engine).iat[0,0]
                 if(qty_result == 1):
                     size = len(input_product_id)
@@ -89,24 +88,19 @@ class Picking_Parts_Window:
                 size = len(input_qty)
                 self.bin_pick_frame_qty_entry.delete(0,size)
                 self.bin_pick_frame_qty_entry.insert(0, '1')
-            
-        
-    # bin_name = self.bin_picked
-    # zone_name = zone_loc
     
     def load_bin_pick_view(self):
         zone_loc = self.input_zone
         self.curr_frame.destroy()
         
         bin_loc = self.bin_picked
-        self.zone_list_i = 0
         
-        self.bin_pick_frame = customtkinter.CTkFrame(master = self.root)
-        self.bin_pick_frame.pack(pady=30, padx=10, side='top')
+        bin_pick_frame = customtkinter.CTkFrame(master = self.root)
+        bin_pick_frame.pack(pady=30, padx=10, side='top')
 
-        self.curr_frame = self.bin_pick_frame
+        self.curr_frame = bin_pick_frame
 
-        customtkinter.CTkLabel(master=self.bin_pick_frame, text="Picking List", font=("Roboto", 34)).pack(pady=30, padx=10)
+        customtkinter.CTkLabel(bin_pick_frame, text="Picking List", font=("Roboto", 34)).pack(pady=30, padx=10)
         
         query = "SELECT PRODUCT_ID, SUM(QUANTITY), ZONE_LOCATION FROM PICKS " \
                 "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' GROUP BY PRODUCT_ID, ZONE_LOCATION ORDER BY ZONE_LOCATION"
@@ -115,7 +109,7 @@ class Picking_Parts_Window:
         product_id = self.product_zone_list.iat[0,0]
         quantity = self.product_zone_list.iat[0,1]        
 
-        pd_frame = customtkinter.CTkFrame(master = self.bin_pick_frame)
+        pd_frame = customtkinter.CTkFrame(bin_pick_frame)
         pd_frame.pack(side='top', pady=10, padx=10)
 
         d_product = "Product: " + str(product_id)
@@ -130,7 +124,7 @@ class Picking_Parts_Window:
         self.bin_pick_frame_zone = customtkinter.CTkLabel(pd_frame, text=d_location, font=("Roboto", 20))
         self.bin_pick_frame_zone.pack(side='left', anchor='w',pady=2, padx=10)
 
-        s_frame = customtkinter.CTkFrame(master = self.bin_pick_frame)
+        s_frame = customtkinter.CTkFrame(bin_pick_frame)
         s_frame.pack(side='top', pady=10, padx=10)
 
         customtkinter.CTkLabel(s_frame, text="Scan: ", font=("Roboto", 20)).pack(side='left', anchor='w', pady=4, padx=5)
@@ -148,9 +142,9 @@ class Picking_Parts_Window:
         self.bin_pick_frame_qty_entry.configure(state='disabled')
 
         tote_name = "" + self.tote_zone
-        self.tote_display = customtkinter.CTkLabel(self.bin_pick_frame, text="Tote: " + tote_name, font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30) 
+        self.tote_display = customtkinter.CTkLabel(bin_pick_frame, text="Tote: " + tote_name, font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30) 
 
-        self.short_cut_frame = customtkinter.CTkFrame(master = self.bin_pick_frame)
+        self.short_cut_frame = customtkinter.CTkFrame(bin_pick_frame)
         self.short_cut_frame.pack(side='bottom', pady=20, padx=20)
 
         customtkinter.CTkLabel(master=self.short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)        
@@ -163,8 +157,7 @@ class Picking_Parts_Window:
         self.bind = self.root.bind('<F7>', self.input_pick_tote)
 
         self.tote_bind = self.root.bind('<F5>', self.enable_qty_input)
-        #self.bin_pick_frame_qty_entry.bind('<Return>', self.check_product)
-        
+
         raise_frame(self.curr_frame)
 
     def exit_bin_pick_view(self, event):
@@ -181,7 +174,6 @@ class Picking_Parts_Window:
             if(len(num) == 0):
                 self.bin_pick_frame_qty_entry.insert(0, '1')
             self.bin_pick_frame_qty_entry.configure(state='disabled')
-        #self.bin_pick_frame_qty_entry.configure(state='disabled')
 
     def check_tote(self, event):
         tote_bin = 'PICK'
@@ -238,45 +230,37 @@ class Picking_Parts_Window:
     def go_to_zone_location(self):
         self.curr_frame.destroy()
         
-        self.go_to_frame = customtkinter.CTkFrame(master = self.root)
-        self.go_to_frame.pack(pady=30, padx=10)
-
-        self.curr_frame = self.go_to_frame
+        go_to_frame = customtkinter.CTkFrame(master = self.root)
+        go_to_frame.pack(pady=30, padx=10)
+        self.curr_frame = go_to_frame
         
         bin_picked = self.bin_picked
-        #print(bin_picked)
         query = "SELECT DISTINCT ZONE_lOCATION FROM PICKS WHERE BIN_LOCATION = '"+bin_picked+"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION"
-        print("------------------")
-        print("Query: " + query)
         zone_location_list = pd.read_sql(query, self.engine)
-        print(zone_location_list)
-        print(zone_location_list.size)
+        
         if(zone_location_list.size == 0):
-            self.load_picking_view(self.go_to_frame)
+            self.load_picking_view()
         else:
             self.zone_loc = zone_location_list.iat[0,0]
             zone_loc = zone_location_list.iat[0,0]
             
             query = "SELECT ORDER_ID, PRODUCT_ID, QUANTITY, ZONE_LOCATION FROM PICKS " \
                         "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION, ORDER_ID"
-
             self.zone_list = pd.read_sql(query, self.engine)
-            #print(self.zone_list)
 
-            self.go_to_frame_label_1 = customtkinter.CTkLabel(master=self.go_to_frame, text="Go to location: "+zone_loc, font=("Roboto", 34)).pack(pady=30, padx=10)
+            customtkinter.CTkLabel(go_to_frame, text="Go to location: "+zone_loc, font=("Roboto", 34)).pack(pady=30, padx=10)
 
-            self.go_to_frame_entry_1 = customtkinter.CTkEntry(master=self.go_to_frame)
+            self.go_to_frame_entry_1 = customtkinter.CTkEntry(go_to_frame)
             self.go_to_frame_entry_1.pack(pady=12, padx=10)
             self.go_to_frame_entry_1.bind('<Return>', self.check_zone_location)
 
-            self.short_cut_frame = customtkinter.CTkFrame(self.go_to_frame)
-            self.short_cut_frame.pack(side='bottom', pady=20, padx=20)
+            short_cut_frame = customtkinter.CTkFrame(go_to_frame)
+            short_cut_frame.pack(side='bottom', pady=20, padx=20)
 
-            customtkinter.CTkLabel(master=self.short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+            customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
             self.bind = self.root.bind('<F3>', self.exit_go_to_view)
         
             raise_frame(self.curr_frame)
-            print("-------------")
 
     def exit_go_to_view(self, event):
         self.root.unbind('<F3>', self.bind)
