@@ -21,7 +21,7 @@ class code_generator:
         self.engine = create_engine('oracle+oracledb://', creator=lambda: self.connection)
 
 
-    def genrate_order_dates(self):
+    def generate_order_dates(self):
         cursor = self.connection.cursor()
         # Jan 24 - 28 Day
         # 'DD-01-2025 10:10:45'
