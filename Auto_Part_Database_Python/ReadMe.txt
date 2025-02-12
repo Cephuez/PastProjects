@@ -1,5 +1,8 @@
-The purpose of this application is to allow the worker to sign in into their devices to complete their tasks. That means providing
-a simple promp request that will tell each worker what they want to do. From there the worker will decide what they want to do
-like picking parts, staging parts, or gather parts to process an order.
+This part of the project is an extension from the previous folder "Auto Part Database". This application will use the database stored in Oracle in order to do multiple things.
+  1. Pick parts for an order
+  2. Move those parts to the staging area
+  3. Collect the parts from the staging area to be giving to the shipper
+  4. Complete the order before being shipped out.
 
-Most of my code is written in "Input_Command.py". Each implementation specifies what functions were used.
+In my code, I used a library called Pandas that will allow me to connect to my Oracle database. In here, I make a simple GUI that allows the user to complete their task. 
+The user will first need to log in into the server. I've created an account for myself for this part.
