@@ -4,7 +4,4 @@ This part of the project is an extension from the previous folder "Auto Part Dat
   3. Collect the parts from the staging area to be giving to the shipper
   4. Complete the order before being shipped out.
 
-In my code, I used a library called Pandas that will allow me to connect to my Oracle database. In here, I make a simple GUI that allows the user to complete their task. 
-The user will first need to log in into the server. I've created an account for myself for this part.
-
-You can navigate to my Implementation Folder. In here, I explain how I coded each of my code.
+In my code, I used a library called Pandas that allows me to connect to my Oracle database. In this part of the code, I implemented a simple program that allows the user to interact with a console. Through here, the user can do task 1-3 by using the console. It's simple, but it's purpose is to set up the code for when I'm going to build up a better GUI.
