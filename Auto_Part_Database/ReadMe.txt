@@ -1,7 +1,3 @@
-In this project, I've been enhancing my skills using PL/SQL and Oracle's SQL Developer Software. In addition, I've been practicing my Python skills by using Pandas, SQLAlchemy, and OracleDB to connect to my database. I used SQL Developer to build my database by creating tables, packages with their own procedures, sequences, views, ane more. The datbase consists of an auto part warehouse where information about products are stored, the employees information, orders created by customers, and more. The whole purpose of this database how a real life warehouse is managed by its worker like picking parts for an order, moving parts around, and shipping orders. 
+In this part of my project, I created a database about an auto part warehouse. In here, I created tables that keeps track of the employee's information, warehouse's inventory, and customer orders. 
+I coded all my code through Oracle's SQL Developer software. I used both SQL and PL/SQL to build up my database by using packages with procedures and functions stored in them. Each of these packages were attached to each table.
 
-As for how I used Python, I connected to my database using Pandas, SQLAlchemy, and OracleDB. The purpose of this application is to allow warehouse workers to complete their duty. Like I mentioned previously, the worker has duties to do and it will all be done through this application. That means signing into their hand held device, and navigating through each window to complete their task. This means checking if there are any parts that needs to be picked, stage parts to their locations, and gathering those parts before being shipped. 
-
-Any file labeled as "Implementation #", is the SQL code I wrote through SQL Developer. I've made sure to link my all of my code used for each implementation.
-
-As for Python, you can navigate to my "Python Pandas" folder to look at it more closely in details.
