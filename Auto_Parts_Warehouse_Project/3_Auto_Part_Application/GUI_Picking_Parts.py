@@ -114,21 +114,22 @@ class Picking_Parts_Window:
 
         d_product = "Product: " + str(product_id)
         self.bin_pick_frame_product = customtkinter.CTkLabel(pd_frame, text=d_product, font=("Roboto", 20))
-        self.bin_pick_frame_product.pack(side='left', anchor='w', pady=2, padx=10)
+        self.bin_pick_frame_product.pack(side='left',pady=2, padx=10)
 
         d_quantity = "QTY: " + str(quantity)
         self.bin_pick_frame_quantity = customtkinter.CTkLabel(pd_frame, text=d_quantity, font=("Roboto", 20))
-        self.bin_pick_frame_quantity.pack(side='left', anchor='w',pady=2, padx=10)
+        self.bin_pick_frame_quantity.pack(side='left', pady=2, padx=10)
 
         d_location = "Zone: " + bin_loc + " " +zone_loc
         self.bin_pick_frame_zone = customtkinter.CTkLabel(pd_frame, text=d_location, font=("Roboto", 20))
-        self.bin_pick_frame_zone.pack(side='left', anchor='w',pady=2, padx=10)
+        self.bin_pick_frame_zone.pack(side='left',pady=2, padx=10)
 
         s_frame = customtkinter.CTkFrame(bin_pick_frame)
         s_frame.pack(side='top', pady=10, padx=10)
 
         customtkinter.CTkLabel(s_frame, text="Scan: ", font=("Roboto", 20)).pack(side='left', anchor='w', pady=4, padx=5)
-        self.bin_pick_frame_entry1 = customtkinter.CTkEntry(s_frame, justify='center')
+        
+        self.bin_pick_frame_entry1 = customtkinter.CTkEntry(s_frame, justify='center', font=("Roboto", 16))
         self.bin_pick_frame_entry1.pack(side='left', anchor='w', pady=4, padx=5)
         self.bin_pick_frame_entry1.bind('<Return>', self.check_product)
         self.bin_pick_frame_entry1.focus_set()
@@ -136,7 +137,7 @@ class Picking_Parts_Window:
         self.bin_pick_frame_qty_input = customtkinter.CTkLabel(s_frame, text="QTY: ", font=("Roboto", 20))
         self.bin_pick_frame_qty_input.pack(side='left', anchor='w', pady=4, padx=5)
 
-        self.bin_pick_frame_qty_entry = customtkinter.CTkEntry(s_frame, justify='center', width = 50, font=("Roboto", 20))
+        self.bin_pick_frame_qty_entry = customtkinter.CTkEntry(s_frame, justify='center', width = 50, font=("Roboto", 16))
         self.bin_pick_frame_qty_entry.insert(0, '1')
         self.bin_pick_frame_qty_entry.pack(side='left', anchor='w', pady=4, padx=5)
         self.bin_pick_frame_qty_entry.bind('<Return>', self.check_product)
@@ -198,15 +199,11 @@ class Picking_Parts_Window:
         self.tote_pick_frame_label_1 = customtkinter.CTkLabel(master=self.tote_pick_frame, text="Scan Tote", font=("Roboto", 40)).pack(pady=12, padx=10)
 
         # Work on the tote name
-        self.tote_pick_frame_tote_entry_1 = customtkinter.CTkEntry(master=self.tote_pick_frame)
+        self.tote_pick_frame_tote_entry_1 = customtkinter.CTkEntry(master=self.tote_pick_frame, font=("Roboto", 16), width = 220)
         self.tote_pick_frame_tote_entry_1.pack(pady=12, padx=10)
         self.tote_pick_frame_tote_entry_1.bind('<Return>', self.check_tote)
         self.tote_pick_frame_tote_entry_1.focus_set()
 
-        #self.short_cut_frame = customtkinter.CTkFrame(master = self.tote_pick_frame)
-        #self.short_cut_frame.pack(side='bottom', pady=20, padx=20)
-
-        #customtkinter.CTkLabel(master=self.short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='bottom', anchor = 'w', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_tote_window)
         
@@ -250,7 +247,7 @@ class Picking_Parts_Window:
 
             customtkinter.CTkLabel(go_to_frame, text="Go to location: "+zone_loc, font=("Roboto", 40)).pack(pady=12, padx=10)
 
-            self.go_to_frame_entry_1 = customtkinter.CTkEntry(go_to_frame)
+            self.go_to_frame_entry_1 = customtkinter.CTkEntry(go_to_frame, font=("Roboto", 16))
             self.go_to_frame_entry_1.pack(pady=12, padx=10)
             self.go_to_frame_entry_1.bind('<Return>', self.check_zone_location)
             self.go_to_frame_entry_1.focus_set()
@@ -294,15 +291,13 @@ class Picking_Parts_Window:
         customtkinter.CTkLabel(pick_frame, text="Picking View", font=("Roboto", 40)).pack(side='top', pady=12, padx=10)      
 
         enter_bin_frame = customtkinter.CTkFrame(pick_frame)
-        enter_bin_frame.pack(side='top', anchor = 'w', pady=10, padx=45)
+        enter_bin_frame.pack(side='top')
      
-        self.pick_frame_entry_1 = customtkinter.CTkEntry(enter_bin_frame, width = 80, font=("Roboto", 20))
-        self.pick_frame_entry_1.pack(side='left', anchor = 'w', pady=1, padx=1)
+        self.pick_frame_entry_1 = customtkinter.CTkEntry(enter_bin_frame, width = 80, font=("Roboto", 16))
+        self.pick_frame_entry_1.pack(side='left', anchor = 'w', pady=2, padx=10)
         self.pick_frame_entry_1.bind('<Return>', self.check_picking_view)
         self.pick_frame_entry_1.bind('<KeyRelease>', self.to_uppercase)
         self.pick_frame_entry_1.focus_set()
-
-
 
         customtkinter.CTkLabel(enter_bin_frame, text="- Enter Bin", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
 
@@ -312,13 +307,9 @@ class Picking_Parts_Window:
         for i in range(int(self.pick_list.size/2)):
             bin_name = self.pick_list.iat[i,0]
             qty = self.pick_list.iat[i,1]
-            pick_word = bin_name + ":\tPicks: " + str(qty)
-            customtkinter.CTkLabel(pick_frame, text=pick_word, font=("Roboto", 20)).pack(side='top', pady=2, padx=30)
+            pick_word = bin_name + ":\tPicks: " + str(qty) 
+            customtkinter.CTkLabel(pick_frame, text=pick_word, font=("Roboto", 20)).pack(side='top', pady=2, padx=10)
 
-        #short_cut_frame = customtkinter.CTkFrame(pick_frame)
-        #short_cut_frame.pack(side='bottom', pady=20, padx=20)
-
-        #customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='bottom', anchor = 'w', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_window)
         

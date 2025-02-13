@@ -93,7 +93,7 @@ class Gather_Parts_Window:
         self.shelf_view_product_display = customtkinter.CTkLabel(product_frame, text="Scan Product: " + str(self.product_id), font=("Roboto", 20))
         self.shelf_view_product_display.pack(side='top',pady=5, padx=10)
 
-        self.shelf_view_product_entry = customtkinter.CTkEntry(product_frame)
+        self.shelf_view_product_entry = customtkinter.CTkEntry(product_frame, font=("Roboto", 16))
         self.shelf_view_product_entry.pack(pady=5, padx=10)
         self.shelf_view_product_entry.bind('<Return>', self.check_product)
         self.shelf_view_product_entry.focus_set()
@@ -104,7 +104,7 @@ class Gather_Parts_Window:
         self.shelf_view_quantity_display = customtkinter.CTkLabel(quantity_frame, text="QTY: " + str(self.quantity), font=("Roboto", 20))
         self.shelf_view_quantity_display.pack(pady=5, padx=10)
 
-        self.shelf_view_quantity_entry = customtkinter.CTkEntry(quantity_frame, justify='center', width = 40)
+        self.shelf_view_quantity_entry = customtkinter.CTkEntry(quantity_frame, justify='center', width = 40, font=("Roboto", 16))
         self.shelf_view_quantity_entry.insert(0, '1')
         self.shelf_view_quantity_entry.pack(pady=5, padx=10)
         self.shelf_view_quantity_entry.bind('<Return>', self.check_product)
@@ -158,13 +158,13 @@ class Gather_Parts_Window:
 
             customtkinter.CTkLabel(staging_view_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=12, padx=10)
 
-            scan_stage_frame = customtkinter.CTkFrame(staging_view_frame)
-            scan_stage_frame.pack(side='top', pady=5, padx=10)
+            #scan_stage_frame = customtkinter.CTkFrame(staging_view_frame)
+            #scan_stage_frame.pack(side='top', pady=5, padx=10)
             
             stage_display = "Scan Stage: " + self.curr_stage
-            customtkinter.CTkLabel(scan_stage_frame, text=stage_display, font=("Roboto", 20)).pack(side='top', anchor='w',pady=10, padx=2)
+            customtkinter.CTkLabel(staging_view_frame, text=stage_display, font=("Roboto", 20)).pack(side='top', pady=10, padx=2)
 
-            self.staging_view_entry = customtkinter.CTkEntry(staging_view_frame)
+            self.staging_view_entry = customtkinter.CTkEntry(staging_view_frame, font=("Roboto", 16))
             self.staging_view_entry.pack(side='top', pady=12, padx=10)
             self.staging_view_entry.bind('<Return>', self.check_stage_input)
             self.staging_view_entry.focus_set()
@@ -211,15 +211,11 @@ class Gather_Parts_Window:
 
         customtkinter.CTkLabel(scan_box_frame, text="Scan Box: ", font=("Roboto", 20)).pack(side='left', anchor='w', pady=10, padx=10)
 
-        self.scan_box_entry = customtkinter.CTkEntry(scan_box_frame)
+        self.scan_box_entry = customtkinter.CTkEntry(scan_box_frame, font=("Roboto", 16), width = 220)
         self.scan_box_entry.pack(side='left', anchor='w', pady=12, padx=10)
         self.scan_box_entry.bind('<Return>', self.check_input_box)
         self.scan_box_entry.focus_set()
 
-        #short_cut_frame = customtkinter.CTkFrame(box_display_frame)
-        #short_cut_frame.pack(side='bottom', pady=20, padx=20)
-
-        #customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 15)).pack(side='left', anchor = 'w', pady=1, padx=30)
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_load_input_box_view)
 
@@ -255,7 +251,7 @@ class Gather_Parts_Window:
 
         customtkinter.CTkLabel(enter_order_id_frame, text="Order: ", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
 
-        self.gather_parts_enter_product = customtkinter.CTkEntry(enter_order_id_frame)
+        self.gather_parts_enter_product = customtkinter.CTkEntry(enter_order_id_frame, font=("Roboto", 16), width = 80)
         self.gather_parts_enter_product.pack(pady=1, padx=1)
         self.gather_parts_enter_product.bind('<Return>', self.check_order_id)
         self.gather_parts_enter_product.focus_set()
@@ -273,6 +269,7 @@ class Gather_Parts_Window:
 
         self.temp_label = []
         self.display_order_list()
+        self.display_extra_order()
 
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind_exit = self.root.bind('<F3>', self.exit_window)
@@ -295,20 +292,39 @@ class Gather_Parts_Window:
             if(i == min_i+6):
                 break
             order_id = self.order_list[i]
-            order_label = customtkinter.CTkLabel(self.order_id_list_frame, text="Order: " + str(order_id), font=("Roboto", 20))
+            id_text = "Order: " + str(order_id)
+            id_extra_order =  "     \t" + "Order: " + str(order_id)
+            order_label = customtkinter.CTkLabel(self.order_id_list_frame, text=id_text, font=("Roboto", 20))
             order_label.pack(side='top', anchor = 'w', pady=2, padx=10)
             self.temp_label.append(order_label)
 
+    def display_extra_order(self):
+        min_i = self.i + 6
+        for i in range(min_i, len(self.order_list)):
+            if(i == min_i+6):
+                break
+            x = i % 6
+
+            label_text = self.temp_label[x]
+            order_text = label_text.cget('text')
+            next_order = "Order: " + str(self.order_list[i])
+            o_text = order_text + "     \t" + next_order
+
+            
+            label_text.configure(text=o_text)
+
     def prev_page(self, event):
-        self.i = self.i - 6
+        self.i = self.i - 12
         if(self.i < 0):
             self.i = 0
         self.display_order_list()
+        self.display_extra_order()
 
     def next_page(self, event):
-        if(self.i + 6 < len(self.order_list)):
-            self.i = self.i + 6
+        if(self.i + 12 < len(self.order_list)):
+            self.i = self.i + 12
         self.display_order_list()
+        self.display_extra_order()
 
         
     def exit_window(self, event):

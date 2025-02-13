@@ -99,7 +99,7 @@ class Staging_Parts_Window:
 
         product_info_scan_stage = customtkinter.CTkLabel(scan_frame, text="Scan Stage:", font=("Roboto", 20)).pack(side='left', anchor='w',pady=4, padx=10)  
 
-        self.product_info_enter_stage = customtkinter.CTkEntry(scan_frame, width = 90)
+        self.product_info_enter_stage = customtkinter.CTkEntry(scan_frame, width = 110, font=("Roboto", 16))
         self.product_info_enter_stage.pack(side='left', anchor='w',pady=2, padx=2)
         self.product_info_enter_stage.bind('<Return>', self.stage_part)
         self.product_info_enter_stage.focus_set()
@@ -107,7 +107,7 @@ class Staging_Parts_Window:
         self.product_info_display_quantity = customtkinter.CTkLabel(scan_frame, text="QTY: ", font=("Roboto", 20), width = 60)
         self.product_info_display_quantity.pack(side='left', anchor='w', pady=2, padx=2)  
 
-        self.product_info_enter_quantity = customtkinter.CTkEntry(scan_frame, width = 35)
+        self.product_info_enter_quantity = customtkinter.CTkEntry(scan_frame, width = 55, font=("Roboto", 16))
         self.product_info_enter_quantity.insert(0, '1')
         self.product_info_enter_quantity.pack(side='left', anchor='w',pady=2, padx=2)
         self.product_info_enter_quantity.bind('<Return>', self.stage_part)
@@ -164,10 +164,10 @@ class Staging_Parts_Window:
         scan_product_frame = customtkinter.CTkFrame(stage_product_view_frame)
         scan_product_frame.pack(side='top', anchor = 'w', pady=10, padx=30)
         
-        stage_product_view_label_2 = customtkinter.CTkLabel(scan_product_frame, text="Scan Product", font=("Roboto", 20))
+        stage_product_view_label_2 = customtkinter.CTkLabel(scan_product_frame, text="Scan Product: ", font=("Roboto", 20))
         stage_product_view_label_2.pack(side='left', anchor='w', pady=5, padx=10)
 
-        self.stage_product_view_entry = customtkinter.CTkEntry(scan_product_frame)
+        self.stage_product_view_entry = customtkinter.CTkEntry(scan_product_frame, font=("Roboto", 16))
         self.stage_product_view_entry.pack(side='left', anchor='w', pady=5, padx=10)
         self.stage_product_view_entry.bind('<Return>', self.check_product_scanned)
         self.stage_product_view_entry.focus_set()
@@ -214,7 +214,7 @@ class Staging_Parts_Window:
 
         scan_tote_label = customtkinter.CTkLabel(scan_tote_frame, text="Scan Tote: ", font=("Roboto", 20)).pack(side='left', anchor='w',pady=2, padx=10)
 
-        self.tote_name_entry = customtkinter.CTkEntry(scan_tote_frame)
+        self.tote_name_entry = customtkinter.CTkEntry(scan_tote_frame, font=("Roboto", 16), width = 200)
         self.tote_name_entry.pack(side ='left', anchor='w', pady=2, padx=2)
         self.tote_name_entry.bind('<Return>', self.check_tote_item_list)
         self.tote_name_entry.focus_set()
