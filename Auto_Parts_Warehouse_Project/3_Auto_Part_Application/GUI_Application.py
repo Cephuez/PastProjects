@@ -25,7 +25,7 @@ class gui_application:
         customtkinter.set_default_color_theme("dark-blue")
 
         self.root = customtkinter.CTk()
-        self.root.geometry("400x450")
+        self.root.geometry("425x450")
 
     def print(self):
         print("GUI Application Started")
@@ -70,7 +70,7 @@ class gui_application:
         self.f_i = self.f_i + 1
 
         self.f2_label_1 = customtkinter.CTkLabel(self.command_list_frame , text="Command List", font=("Roboto", 40))
-        self.f2_label_1.pack(side='top', pady=20, padx = 20)
+        self.f2_label_1.pack(side='top', pady=12, padx=10)
 
         customtkinter.CTkLabel(self.command_list_frame, text="1. Start Picking", font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30)
 

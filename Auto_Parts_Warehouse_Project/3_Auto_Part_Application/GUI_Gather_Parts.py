@@ -66,11 +66,11 @@ class Gather_Parts_Window:
         self.curr_frame.destroy()
 
         shelf_view_frame = customtkinter.CTkFrame(master = self.root)
-        shelf_view_frame.pack(pady=30, padx=10)
+        shelf_view_frame.pack(pady=20, padx=20, fill="both", expand=True)
         self.curr_frame = shelf_view_frame
 
         shelf_view_label = customtkinter.CTkLabel(shelf_view_frame, text="Pick Part From Shelf", font=("Roboto", 40))
-        shelf_view_label.pack(pady=10, padx=10)
+        shelf_view_label.pack(pady=12, padx=10)
 
         query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
                 "WHERE ORDER_ID = "+self.order_id+" AND ZONE = '"+self.curr_stage+"' GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID"
@@ -110,14 +110,10 @@ class Gather_Parts_Window:
         self.shelf_view_quantity_entry.bind('<Return>', self.check_product)
         self.shelf_view_quantity_entry.configure(state='disabled')
 
-        
-        short_cut_frame = customtkinter.CTkFrame(shelf_view_frame)
-        short_cut_frame.pack(side='bottom', pady=20, padx=20)
-
-        customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+        customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind_exit = self.root.bind('<F3>', self.exit_display_product_view)
 
-        customtkinter.CTkLabel(short_cut_frame, text="F5. QTY", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+        customtkinter.CTkLabel(self.curr_frame, text="F5. QTY", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25) 
         self.bind_qty = self.root.bind('<F5>', self.enable_qty_input)
         
 
@@ -148,7 +144,7 @@ class Gather_Parts_Window:
         self.curr_frame.destroy()
 
         staging_view_frame = customtkinter.CTkFrame(master = self.root)
-        staging_view_frame.pack(pady=30, padx=10)
+        staging_view_frame.pack(pady=20, padx=20, fill="both", expand=True)
         self.curr_frame = staging_view_frame
 
         query = "SELECT DISTINCT(ZONE) FROM ORDERS_READY WHERE ORDER_ID = "+self.order_id+" ORDER BY ZONE"
@@ -160,7 +156,7 @@ class Gather_Parts_Window:
         else:
             self.curr_stage = pd.read_sql(query, self.engine).iat[0,0]
 
-            customtkinter.CTkLabel(staging_view_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=10, padx=10)
+            customtkinter.CTkLabel(staging_view_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=12, padx=10)
 
             scan_stage_frame = customtkinter.CTkFrame(staging_view_frame)
             scan_stage_frame.pack(side='top', pady=5, padx=10)
@@ -173,10 +169,11 @@ class Gather_Parts_Window:
             self.staging_view_entry.bind('<Return>', self.check_stage_input)
             self.staging_view_entry.focus_set()
 
-            short_cut_frame = customtkinter.CTkFrame(staging_view_frame)
-            short_cut_frame.pack(side='bottom', pady=20, padx=20)
+            #short_cut_frame = customtkinter.CTkFrame(staging_view_frame)
+            #short_cut_frame.pack(side='bottom', pady=20, padx=20)
 
-            customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+            #customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)
+            customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
             self.bind = self.root.bind('<F3>', self.exit_load_staging_view)
 
             raise_frame(self.curr_frame)
@@ -204,10 +201,10 @@ class Gather_Parts_Window:
         self.curr_frame.destroy()
 
         box_display_frame = customtkinter.CTkFrame(master = self.root)
-        box_display_frame.pack(pady=30, padx=10)
+        box_display_frame.pack(pady=20, padx=20, fill="both", expand=True)
         self.curr_frame = box_display_frame
 
-        customtkinter.CTkLabel(box_display_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=10, padx=10)
+        customtkinter.CTkLabel(box_display_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=12, padx=10)
 
         scan_box_frame = customtkinter.CTkFrame(box_display_frame)
         scan_box_frame.pack(side='top', anchor = 'w', pady=10, padx=30)
@@ -219,10 +216,11 @@ class Gather_Parts_Window:
         self.scan_box_entry.bind('<Return>', self.check_input_box)
         self.scan_box_entry.focus_set()
 
-        short_cut_frame = customtkinter.CTkFrame(box_display_frame)
-        short_cut_frame.pack(side='bottom', pady=20, padx=20)
+        #short_cut_frame = customtkinter.CTkFrame(box_display_frame)
+        #short_cut_frame.pack(side='bottom', pady=20, padx=20)
 
-        customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 15)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+        #customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 15)).pack(side='left', anchor = 'w', pady=1, padx=30)
+        customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_load_input_box_view)
 
         raise_frame(self.curr_frame)
@@ -247,10 +245,10 @@ class Gather_Parts_Window:
         self.i = 0
         self.box_tote = ""
         gather_parts_frame = customtkinter.CTkFrame(master = self.root)
-        gather_parts_frame.pack(pady=25, padx=10)
+        gather_parts_frame.pack(pady=20, padx=20, fill="both", expand=True)
         self.curr_frame = gather_parts_frame
 
-        customtkinter.CTkLabel(gather_parts_frame, text="Orders Ready List", font=("Roboto", 40)).pack(side='top', pady=30, padx=10)
+        customtkinter.CTkLabel(gather_parts_frame, text="Orders Ready List", font=("Roboto", 40)).pack(side='top', pady=12, padx=10)
 
         enter_order_id_frame = customtkinter.CTkFrame(gather_parts_frame)
         enter_order_id_frame.pack(side='top', anchor = 'w', pady=5, padx=30)
@@ -276,16 +274,13 @@ class Gather_Parts_Window:
         self.temp_label = []
         self.display_order_list()
 
-        short_cut_frame = customtkinter.CTkFrame(gather_parts_frame)
-        short_cut_frame.pack(side='bottom', pady=2, padx=20)
-
-        customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=5)        
+        customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind_exit = self.root.bind('<F3>', self.exit_window)
 
-        customtkinter.CTkLabel(short_cut_frame, text="F5. Prev", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=5)        
+        customtkinter.CTkLabel(self.curr_frame, text="F5. Prev", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25) 
         self.bind_exit = self.root.bind('<F5>', self.prev_page)
 
-        customtkinter.CTkLabel(short_cut_frame, text="F7. Next", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=5)        
+        customtkinter.CTkLabel(self.curr_frame, text="F7. Next", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind_exit = self.root.bind('<F7>', self.next_page)
         
         raise_frame(self.curr_frame)
