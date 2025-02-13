@@ -84,8 +84,11 @@ class Gather_Parts_Window:
         
         customtkinter.CTkLabel(shelf_view_frame, text=self.curr_stage, font=("Roboto", 28)).pack(pady=10, padx=10)
 
-        product_frame = customtkinter.CTkFrame(shelf_view_frame)
-        product_frame.pack(side='left', anchor='w', pady=30, padx=30)
+        test_frame = customtkinter.CTkFrame(shelf_view_frame)
+        test_frame.pack(side='top', padx=5)
+
+        product_frame = customtkinter.CTkFrame(test_frame)
+        product_frame.pack(side='left', anchor='w')
         
         self.shelf_view_product_display = customtkinter.CTkLabel(product_frame, text="Scan Product: " + str(self.product_id), font=("Roboto", 20))
         self.shelf_view_product_display.pack(side='top',pady=5, padx=10)
@@ -93,9 +96,10 @@ class Gather_Parts_Window:
         self.shelf_view_product_entry = customtkinter.CTkEntry(product_frame)
         self.shelf_view_product_entry.pack(pady=5, padx=10)
         self.shelf_view_product_entry.bind('<Return>', self.check_product)
+        self.shelf_view_product_entry.focus_set()
         
-        quantity_frame = customtkinter.CTkFrame(shelf_view_frame)
-        quantity_frame.pack(side='right', anchor='e', pady=30, padx=30)
+        quantity_frame = customtkinter.CTkFrame(test_frame)
+        quantity_frame.pack(side='right', anchor='e')
         
         self.shelf_view_quantity_display = customtkinter.CTkLabel(quantity_frame, text="QTY: " + str(self.quantity), font=("Roboto", 20))
         self.shelf_view_quantity_display.pack(pady=5, padx=10)
@@ -106,9 +110,24 @@ class Gather_Parts_Window:
         self.shelf_view_quantity_entry.bind('<Return>', self.check_product)
         self.shelf_view_quantity_entry.configure(state='disabled')
 
-        self.root.bind('<F5>', self.enable_qty_input)
+        
+        short_cut_frame = customtkinter.CTkFrame(shelf_view_frame)
+        short_cut_frame.pack(side='bottom', pady=20, padx=20)
+
+        customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+        self.bind_exit = self.root.bind('<F3>', self.exit_display_product_view)
+
+        customtkinter.CTkLabel(short_cut_frame, text="F5. QTY", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)        
+        self.bind_qty = self.root.bind('<F5>', self.enable_qty_input)
+        
 
         raise_frame(self.curr_frame)
+
+    def exit_display_product_view(self, event):
+        self.root.unbind('<F3>', self.bind_exit)
+        self.root.unbind('<F5>', self.bind_qty)
+        self.curr_frame.destroy()
+        self.load_staging_view()        
 
     def enable_qty_input(self, event):
         state_condition = self.shelf_view_quantity_entry.cget("state")
@@ -151,7 +170,8 @@ class Gather_Parts_Window:
 
             self.staging_view_entry = customtkinter.CTkEntry(staging_view_frame)
             self.staging_view_entry.pack(side='top', pady=12, padx=10)
-            self.staging_view_entry.bind('<Return>', self.check_stage_input)  
+            self.staging_view_entry.bind('<Return>', self.check_stage_input)
+            self.staging_view_entry.focus_set()
 
             short_cut_frame = customtkinter.CTkFrame(staging_view_frame)
             short_cut_frame.pack(side='bottom', pady=20, padx=20)
@@ -197,6 +217,7 @@ class Gather_Parts_Window:
         self.scan_box_entry = customtkinter.CTkEntry(scan_box_frame)
         self.scan_box_entry.pack(side='left', anchor='w', pady=12, padx=10)
         self.scan_box_entry.bind('<Return>', self.check_input_box)
+        self.scan_box_entry.focus_set()
 
         short_cut_frame = customtkinter.CTkFrame(box_display_frame)
         short_cut_frame.pack(side='bottom', pady=20, padx=20)
@@ -238,7 +259,8 @@ class Gather_Parts_Window:
 
         self.gather_parts_enter_product = customtkinter.CTkEntry(enter_order_id_frame)
         self.gather_parts_enter_product.pack(pady=1, padx=1)
-        self.gather_parts_enter_product.bind('<Return>', self.check_order_id)   
+        self.gather_parts_enter_product.bind('<Return>', self.check_order_id)
+        self.gather_parts_enter_product.focus_set()
 
         get_orders_query = "SELECT DISTINCT(ORDER_ID) FROM ORDERS_READY ORDER BY ORDER_ID"
         all_order_list = pd.read_sql(get_orders_query, self.engine)

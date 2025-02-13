@@ -131,6 +131,7 @@ class Picking_Parts_Window:
         self.bin_pick_frame_entry1 = customtkinter.CTkEntry(s_frame, justify='center')
         self.bin_pick_frame_entry1.pack(side='left', anchor='w', pady=4, padx=5)
         self.bin_pick_frame_entry1.bind('<Return>', self.check_product)
+        self.bin_pick_frame_entry1.focus_set()
 
         self.bin_pick_frame_qty_input = customtkinter.CTkLabel(s_frame, text="QTY: ", font=("Roboto", 20))
         self.bin_pick_frame_qty_input.pack(side='left', anchor='w', pady=4, padx=5)
@@ -203,6 +204,7 @@ class Picking_Parts_Window:
         self.tote_pick_frame_tote_entry_1 = customtkinter.CTkEntry(master=self.tote_pick_frame)
         self.tote_pick_frame_tote_entry_1.pack(pady=12, padx=10)
         self.tote_pick_frame_tote_entry_1.bind('<Return>', self.check_tote)
+        self.tote_pick_frame_tote_entry_1.focus_set()
 
         self.short_cut_frame = customtkinter.CTkFrame(master = self.tote_pick_frame)
         self.short_cut_frame.pack(side='bottom', pady=20, padx=20)
@@ -253,6 +255,7 @@ class Picking_Parts_Window:
             self.go_to_frame_entry_1 = customtkinter.CTkEntry(go_to_frame)
             self.go_to_frame_entry_1.pack(pady=12, padx=10)
             self.go_to_frame_entry_1.bind('<Return>', self.check_zone_location)
+            self.go_to_frame_entry_1.focus_set()
 
             short_cut_frame = customtkinter.CTkFrame(go_to_frame)
             short_cut_frame.pack(side='bottom', pady=20, padx=20)
@@ -274,8 +277,15 @@ class Picking_Parts_Window:
         for i in range(0,int(self.pick_list.size/2)):
             if(str(self.pick_list.iat[i,0]) == self.bin_picked):
                 self.go_to_zone_location()
-        
+
+    def to_uppercase(self, event):
+        input_bin = self.pick_frame_entry_1.get()
+        length = len(input_bin)
+        self.pick_frame_entry_1.delete(0,length)
+        self.pick_frame_entry_1.insert(0,input_bin.upper())
+            
     def load_picking_view(self):
+           
         self.curr_frame.destroy()
 
         pick_frame = customtkinter.CTkFrame(master = self.root)
@@ -285,11 +295,15 @@ class Picking_Parts_Window:
         customtkinter.CTkLabel(pick_frame, text="Picking View", font=("Roboto", 40)).pack(side='top', pady=30, padx=10)      
 
         enter_bin_frame = customtkinter.CTkFrame(pick_frame)
-        enter_bin_frame.pack(side='top', anchor = 'w', pady=10, padx=30)
-        
-        self.pick_frame_entry_1 = customtkinter.CTkEntry(enter_bin_frame, width = 30, font=("Roboto", 20))
+        enter_bin_frame.pack(side='top', anchor = 'w', pady=10, padx=45)
+     
+        self.pick_frame_entry_1 = customtkinter.CTkEntry(enter_bin_frame, width = 80, font=("Roboto", 20))
         self.pick_frame_entry_1.pack(side='left', anchor = 'w', pady=1, padx=1)
         self.pick_frame_entry_1.bind('<Return>', self.check_picking_view)
+        self.pick_frame_entry_1.bind('<KeyRelease>', self.to_uppercase)
+        self.pick_frame_entry_1.focus_set()
+
+
 
         customtkinter.CTkLabel(enter_bin_frame, text="- Enter Bin", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
 

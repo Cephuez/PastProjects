@@ -27,9 +27,6 @@ class gui_application:
         self.root = customtkinter.CTk()
         self.root.geometry("500x450")
 
-        #self.root = customtkinter.CTk()
-        #self.root.geometry("500x450")
-
     def print(self):
         print("GUI Application Started")
 
@@ -66,28 +63,6 @@ class gui_application:
         This will display the views by calling separate classes
     
     '''    
-    
-    ## From here, you will launch seperate classes to handle each window
-    def check_input(self, event):
-        input_num = self.f2_command_entry.get()
-        #print("Entry: " + input_num)
-        size = len(input_num)
-        self.f2_command_entry.delete(0,size)
-        if(input_num == '1'):
-            Picking_Window = Picking_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
-            self.root.unbind('<F3>', self.bin)
-            Picking_Window.load_picking_view()
-            #self.load_picking_view(None)
-        elif(input_num == '2'):
-            Staging_Window = Staging_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
-            self.root.unbind('<F3>', self.bin)
-            Staging_Window.load_staging_view()
-            #self.load_staging_view(None)
-        elif(input_num == '3'):
-            Gather_Window = Gather_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
-            self.root.unbind('<F3>', self.bin)
-            Gather_Window.load_gather_parts_view()
-
     def display_command_window(self):
         self.command_list_frame = customtkinter.CTkFrame(self.root)
         self.command_list_frame.pack(pady=20, padx=10, fill="y", expand=True)
@@ -95,31 +70,52 @@ class gui_application:
         self.f_i = self.f_i + 1
 
         self.f2_label_1 = customtkinter.CTkLabel(self.command_list_frame , text="Command List", font=("Roboto", 40))
-        self.f2_label_1.pack(side='top', pady=10, padx = 1)
-
-        self.command_input_frame = customtkinter.CTkFrame(self.command_list_frame)
-        self.command_input_frame.pack(side='top', anchor = 'w', pady=10, padx=25)
-
-        self.f2_command_entry = customtkinter.CTkEntry(self.command_input_frame, width = 30, font=("Roboto", 20))
-        self.f2_command_entry.pack(side='left', anchor = 'w', pady=1, padx=1)
-        self.f2_command_entry.bind('<Return>', self.check_input)
-
-        customtkinter.CTkLabel(self.command_input_frame, text="- Command", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
+        self.f2_label_1.pack(side='top', pady=20, padx = 20)
 
         customtkinter.CTkLabel(self.command_list_frame, text="1. Start Picking", font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30)
 
         customtkinter.CTkLabel(self.command_list_frame, text="2. Stage Items", font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30)
 
-        customtkinter.CTkLabel(master=self.command_list_frame, text="3. Gather Order Parts", font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30)
+        customtkinter.CTkLabel(self.command_list_frame, text="3. Gather Order Parts", font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30)
 
-        self.short_cut_frame = customtkinter.CTkFrame(master = self.command_list_frame)
-        self.short_cut_frame.pack(side='bottom', pady=20, padx=20)
+        #short_cut_frame = customtkinter.CTkFrame(self.command_list_frame)\
+        #short_cut_frame = customtkinter.CTkFrame(self.command_list_frame)
+        #short_cut_frame.pack(side='bottom', pady=20, padx=20)
 
-        customtkinter.CTkLabel(master=self.short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)
+        customtkinter.CTkLabel(self.command_list_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='bottom', anchor = 'w', pady=10, padx=25)
+        #tkinter.Label(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w')
+        
+        self.input_1 = self.root.bind('1', self.start_picking_window)
+        self.input_2 = self.root.bind('2', self.start_staging_window)
+        self.input_3 = self.root.bind('3', self.start_gather_window)
 
         self.bin = self.root.bind('<F3>', self.exit_window)
-        raise_frame(self.command_list_frame)     
+        raise_frame(self.command_list_frame)
 
+    def start_picking_window(self, event):
+        self.root.unbind('<F3>', self.bin)
+        self.root.unbind('1', self.input_1)
+        self.root.unbind('2', self.input_2)
+        self.root.unbind('3', self.input_3)
+        Picking_Window = Picking_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
+        Picking_Window.load_picking_view()
+
+    def start_staging_window(self, event):
+        self.root.unbind('<F3>', self.bin)
+        self.root.unbind('1', self.input_1)
+        self.root.unbind('2', self.input_2)
+        self.root.unbind('3', self.input_3)
+        Staging_Window = Staging_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
+        Staging_Window.load_staging_view()
+
+    def start_gather_window(self, event):
+        self.root.unbind('<F3>', self.bin)
+        self.root.unbind('1', self.input_1)
+        self.root.unbind('2', self.input_2)
+        self.root.unbind('3', self.input_3)
+        Gather_Window = Gather_Parts_Window(self, "Name", self.connection, self.engine, self.root, self.command_list_frame)
+        Gather_Window.load_gather_parts_view()
+        
     def exit_window(self, event):
         self.root.unbind('<F3>', self.bin)
         self.frame_list[self.f_i].destroy()
