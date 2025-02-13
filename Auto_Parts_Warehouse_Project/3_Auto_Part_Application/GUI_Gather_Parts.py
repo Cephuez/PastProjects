@@ -69,7 +69,7 @@ class Gather_Parts_Window:
         shelf_view_frame.pack(pady=30, padx=10)
         self.curr_frame = shelf_view_frame
 
-        shelf_view_label = customtkinter.CTkLabel(shelf_view_frame, text="Pick Part From Shelf", font=("Roboto", 34))
+        shelf_view_label = customtkinter.CTkLabel(shelf_view_frame, text="Pick Part From Shelf", font=("Roboto", 40))
         shelf_view_label.pack(pady=10, padx=10)
 
         query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
@@ -160,7 +160,7 @@ class Gather_Parts_Window:
         else:
             self.curr_stage = pd.read_sql(query, self.engine).iat[0,0]
 
-            customtkinter.CTkLabel(staging_view_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 35)).pack(side='top', pady=10, padx=10)
+            customtkinter.CTkLabel(staging_view_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=10, padx=10)
 
             scan_stage_frame = customtkinter.CTkFrame(staging_view_frame)
             scan_stage_frame.pack(side='top', pady=5, padx=10)
@@ -207,7 +207,7 @@ class Gather_Parts_Window:
         box_display_frame.pack(pady=30, padx=10)
         self.curr_frame = box_display_frame
 
-        customtkinter.CTkLabel(box_display_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 35)).pack(side='top', pady=10, padx=10)
+        customtkinter.CTkLabel(box_display_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=10, padx=10)
 
         scan_box_frame = customtkinter.CTkFrame(box_display_frame)
         scan_box_frame.pack(side='top', anchor = 'w', pady=10, padx=30)
@@ -250,7 +250,7 @@ class Gather_Parts_Window:
         gather_parts_frame.pack(pady=25, padx=10)
         self.curr_frame = gather_parts_frame
 
-        customtkinter.CTkLabel(gather_parts_frame, text="Orders Ready List", font=("Roboto", 34)).pack(side='top', pady=30, padx=10)
+        customtkinter.CTkLabel(gather_parts_frame, text="Orders Ready List", font=("Roboto", 40)).pack(side='top', pady=30, padx=10)
 
         enter_order_id_frame = customtkinter.CTkFrame(gather_parts_frame)
         enter_order_id_frame.pack(side='top', anchor = 'w', pady=5, padx=30)

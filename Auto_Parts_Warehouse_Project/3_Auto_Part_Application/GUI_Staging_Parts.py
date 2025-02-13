@@ -86,7 +86,7 @@ class Staging_Parts_Window:
         product_info_frame.pack(pady=2, padx=10)
         self.curr_frame = product_info_frame
 
-        self.product_info_label = customtkinter.CTkLabel(product_info_frame, text="Display Product Info", font=("Roboto", 34))
+        self.product_info_label = customtkinter.CTkLabel(product_info_frame, text="Display Product Info", font=("Roboto", 40))
         self.product_info_label.pack(pady=30, padx=10)
 
         query = "SELECT PRODUCT_ID, COUNT(UNITS) FROM ORDER_LIST WHERE ZONE = '"+self.tote_zone+"' AND PRODUCT_ID = "+self.product_id+" GROUP BY PRODUCT_ID"
@@ -171,7 +171,7 @@ class Staging_Parts_Window:
         stage_product_view_frame.pack(pady=30, padx=10)
         self.curr_frame = stage_product_view_frame
 
-        stage_product_view_label = customtkinter.CTkLabel(stage_product_view_frame, text="Tote View", font=("Roboto", 34))
+        stage_product_view_label = customtkinter.CTkLabel(stage_product_view_frame, text="Tote View", font=("Roboto", 40))
         stage_product_view_label.pack(pady=30, padx=10)
 
         self.stage_product_view_show_tote = customtkinter.CTkLabel(stage_product_view_frame, text="Tote: " + self.tote_zone, font=("Roboto", 20))

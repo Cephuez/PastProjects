@@ -25,7 +25,7 @@ class gui_application:
         customtkinter.set_default_color_theme("dark-blue")
 
         self.root = customtkinter.CTk()
-        self.root.geometry("500x450")
+        self.root.geometry("400x450")
 
     def print(self):
         print("GUI Application Started")
@@ -65,7 +65,7 @@ class gui_application:
     '''    
     def display_command_window(self):
         self.command_list_frame = customtkinter.CTkFrame(self.root)
-        self.command_list_frame.pack(pady=20, padx=10, fill="y", expand=True)
+        self.command_list_frame.pack(pady=20, padx=20, fill="both", expand=True)
         self.frame_list.append(self.command_list_frame)
         self.f_i = self.f_i + 1
 
@@ -131,10 +131,10 @@ class gui_application:
         self.f_i = 0;
         
         self.log_in_frame = customtkinter.CTkFrame(self.root)
-        self.log_in_frame.pack(pady=1, padx=1, fill="both", expand=True)
+        self.log_in_frame.pack(pady=20, padx=20, fill="both", expand=True)
         self.frame_list.append(self.log_in_frame)
 
-        self.log_in_label = customtkinter.CTkLabel(master=self.log_in_frame, text="Login  System", font=("Roboto", 24))
+        self.log_in_label = customtkinter.CTkLabel(master=self.log_in_frame, text="Login  System", font=("Roboto", 40))
         self.log_in_label.pack(pady=12, padx=10)
 
         self.username_entry = customtkinter.CTkEntry(master=self.log_in_frame, placeholder_text="Username")
