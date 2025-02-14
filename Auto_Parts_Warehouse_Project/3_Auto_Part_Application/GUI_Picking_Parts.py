@@ -37,30 +37,39 @@ class Picking_Parts_Window:
     def update_product_view(self):
         zone_loc = self.zone_loc
 
-        query = "SELECT PRODUCT_ID, SUM(QUANTITY), ZONE_LOCATION FROM PICKS " \
-        "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' GROUP BY PRODUCT_ID, ZONE_LOCATION ORDER BY ZONE_LOCATION"
+        #query = "SELECT PRODUCT_ID, SUM(QUANTITY), ZONE_LOCATION FROM PICKS " \
+        #"WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' GROUP BY PRODUCT_ID, ZONE_LOCATION ORDER BY ZONE_LOCATION"
+        query = "SELECT PK.PRODUCT_ID, SUM(PK.QUANTITY), PK.ZONE_LOCATION, P.PRODUCT_NAME " \
+                "FROM PICKS PK " \
+                "JOIN PRODUCT P " \
+                "    ON PK.PRODUCT_ID = P.PRODUCT_ID " \
+                "WHERE ZONE_LOCATION = '"+ zone_loc +"' AND PICK_STATUS = 'N' " \
+                "GROUP BY PK.PRODUCT_ID, PK.ZONE_LOCATION, P.PRODUCT_NAME " \
+                "ORDER BY PK.ZONE_LOCATION"
+        
         self.product_zone_list = pd.read_sql(query, self.engine)
 
         if(self.product_zone_list.size == 0):
-            #self.go_to_zone_location(self.bin_pick_frame)
             self.tote_zone = ""
             self.root.unbind('<F3>', self.bind)
             self.go_to_zone_location()
-            print("Go back")
         else:
             product_id = self.product_zone_list.iat[0,0]
             qty = self.product_zone_list.iat[0,1]
             zone_loc = self.product_zone_list.iat[0,2]
+            product_name = self.product_zone_list.iat[0,3]
             bin_loc = self.bin_picked
             self.loc = zone_loc
 
             self.bin_pick_frame_product.configure(text = "Product: " + str(product_id))
             self.bin_pick_frame_quantity.configure(text = "QTY: " + str(qty))
             self.bin_pick_frame_zone.configure(text = "Zone: " + bin_loc + " " + zone_loc)
+            self.bin_pick_part_name.configure(text = "Part Name: " + str(product_name))
         
         
     def check_product(self,event):
-        if(self.tote_zone != ""):
+        if(len(self.tote_zone) > 0):
+            self.bin_pick_frame_qty_entry.configure(state='normal')
             input_product_id = self.bin_pick_frame_entry1.get()
             input_qty = self.bin_pick_frame_qty_entry.get()
 
@@ -77,17 +86,30 @@ class Picking_Parts_Window:
                     size = len(input_qty)
                     self.bin_pick_frame_qty_entry.delete(0,size)
                     self.bin_pick_frame_qty_entry.insert(0, '1')
+                    self.qty_input_state_change()
                     cursor = self.connection.cursor()
                     query = "BEGIN PACKAGE_PICKS.PROCESS_PICKS(" + str(product_id) + ", 1, "+str(input_qty)+", '" + bin_loc + "', '" + zone_loc + \
                         "', 'PICK', '" + tote_zone +"'); commit; END;"
                     result = cursor.execute(query)
                     self.update_product_view()
+                else:
+                    self.root.bell()
             else:
                 size = len(input_product_id)
                 self.bin_pick_frame_entry1.delete(0,size)
-                size = len(input_qty)
-                self.bin_pick_frame_qty_entry.delete(0,size)
-                self.bin_pick_frame_qty_entry.insert(0, '1')
+                self.root.bell()
+        else:
+            self.root.bell()
+            self.tote_display.configure(text="Tote: Enter Valid Tote")
+
+    def validate_entry(self, new_text):
+        if not new_text:
+            return True
+        try:
+            int(new_text)
+            return True
+        except ValueError:
+            return False
     
     def load_bin_pick_view(self):
         zone_loc = self.input_zone
@@ -102,12 +124,23 @@ class Picking_Parts_Window:
 
         customtkinter.CTkLabel(bin_pick_frame, text="Picking List", font=("Roboto", 40)).pack(pady=12, padx=10)
         
-        query = "SELECT PRODUCT_ID, SUM(QUANTITY), ZONE_LOCATION FROM PICKS " \
-                "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' GROUP BY PRODUCT_ID, ZONE_LOCATION ORDER BY ZONE_LOCATION"
+
+        #query = "SELECT PRODUCT_ID, SUM(QUANTITY), ZONE_LOCATION FROM PICKS " \
+        #        "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' GROUP BY PRODUCT_ID, ZONE_LOCATION ORDER BY ZONE_LOCATION"
+
+        query = "SELECT PK.PRODUCT_ID, SUM(PK.QUANTITY), PK.ZONE_LOCATION, P.PRODUCT_NAME " \
+                "FROM PICKS PK " \
+                "JOIN PRODUCT P " \
+                "    ON PK.PRODUCT_ID = P.PRODUCT_ID " \
+                "WHERE ZONE_LOCATION = '"+ zone_loc +"' AND PICK_STATUS = 'N' " \
+                "GROUP BY PK.PRODUCT_ID, PK.ZONE_LOCATION, P.PRODUCT_NAME " \
+                "ORDER BY PK.ZONE_LOCATION"
         self.product_zone_list = pd.read_sql(query, self.engine)
 
         product_id = self.product_zone_list.iat[0,0]
-        quantity = self.product_zone_list.iat[0,1]        
+        quantity = self.product_zone_list.iat[0,1]
+        product_name = self.product_zone_list.iat[0,3]
+        
 
         pd_frame = customtkinter.CTkFrame(bin_pick_frame)
         pd_frame.pack(side='top', pady=10, padx=10)
@@ -124,6 +157,11 @@ class Picking_Parts_Window:
         self.bin_pick_frame_zone = customtkinter.CTkLabel(pd_frame, text=d_location, font=("Roboto", 20))
         self.bin_pick_frame_zone.pack(side='left',pady=2, padx=10)
 
+        d_part_name = "Part Name: " + str(product_name)
+        self.bin_pick_part_name = customtkinter.CTkLabel(bin_pick_frame, text=d_part_name, font=("Roboto", 20))
+        self.bin_pick_part_name.pack(pady=2, padx=10)
+        
+
         s_frame = customtkinter.CTkFrame(bin_pick_frame)
         s_frame.pack(side='top', pady=10, padx=10)
 
@@ -132,19 +170,22 @@ class Picking_Parts_Window:
         self.bin_pick_frame_entry1 = customtkinter.CTkEntry(s_frame, justify='center', font=("Roboto", 16))
         self.bin_pick_frame_entry1.pack(side='left', anchor='w', pady=4, padx=5)
         self.bin_pick_frame_entry1.bind('<Return>', self.check_product)
+        self.bin_pick_frame_entry1.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.bin_pick_frame_entry1))
         self.bin_pick_frame_entry1.focus_set()
 
+        validation = self.root.register(self.validate_entry)
         self.bin_pick_frame_qty_input = customtkinter.CTkLabel(s_frame, text="QTY: ", font=("Roboto", 20))
         self.bin_pick_frame_qty_input.pack(side='left', anchor='w', pady=4, padx=5)
 
-        self.bin_pick_frame_qty_entry = customtkinter.CTkEntry(s_frame, justify='center', width = 50, font=("Roboto", 16))
+        self.bin_pick_frame_qty_entry = customtkinter.CTkEntry(s_frame, justify='center', width = 50, font=("Roboto", 16), validate="key", validatecommand=(validation, "%P"))
         self.bin_pick_frame_qty_entry.insert(0, '1')
         self.bin_pick_frame_qty_entry.pack(side='left', anchor='w', pady=4, padx=5)
         self.bin_pick_frame_qty_entry.bind('<Return>', self.check_product)
         self.bin_pick_frame_qty_entry.configure(state='disabled')
 
         tote_name = "" + self.tote_zone
-        self.tote_display = customtkinter.CTkLabel(bin_pick_frame, text="Tote: " + tote_name, font=("Roboto", 20)).pack(side='top', anchor = 'w', pady=1, padx=30) 
+        self.tote_display = customtkinter.CTkLabel(bin_pick_frame, text="Tote: " + tote_name, font=("Roboto", 20))
+        self.tote_display.pack(side='top', anchor = 'w', pady=1, padx=30)
 
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_bin_pick_view)
@@ -163,16 +204,21 @@ class Picking_Parts_Window:
         self.tote_zone = ""
         self.root.unbind('<F3>', self.bind)
         self.go_to_zone_location()
-        
-    def enable_qty_input(self, event):
+
+    def qty_input_state_change(self):
         state_condition = self.bin_pick_frame_qty_entry.cget("state")
         if(state_condition == 'disabled'):
             self.bin_pick_frame_qty_entry.configure(state='normal')
+            self.bin_pick_frame_qty_entry.focus_set()
         elif(state_condition == 'normal'):
             num = self.bin_pick_frame_qty_entry.get()
             if(len(num) == 0):
                 self.bin_pick_frame_qty_entry.insert(0, '1')
             self.bin_pick_frame_qty_entry.configure(state='disabled')
+            self.bin_pick_frame_entry1.focus_set()
+
+    def enable_qty_input(self, event):
+        self.qty_input_state_change()
 
     def check_tote(self, event):
         tote_bin = 'PICK'
@@ -185,6 +231,7 @@ class Picking_Parts_Window:
         if(tote_result == 1):
             self.load_bin_pick_view()
         else:
+            self.root.bell()
             size = len(tote_zone)
             self.tote_pick_frame_tote_entry_1.delete(0,size)
         
@@ -202,6 +249,7 @@ class Picking_Parts_Window:
         self.tote_pick_frame_tote_entry_1 = customtkinter.CTkEntry(master=self.tote_pick_frame, font=("Roboto", 16), width = 220)
         self.tote_pick_frame_tote_entry_1.pack(pady=12, padx=10)
         self.tote_pick_frame_tote_entry_1.bind('<Return>', self.check_tote)
+        self.tote_pick_frame_tote_entry_1.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.tote_pick_frame_tote_entry_1))
         self.tote_pick_frame_tote_entry_1.focus_set()
 
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='bottom', anchor = 'w', pady=10, padx=25)
@@ -220,6 +268,7 @@ class Picking_Parts_Window:
             self.input_zone = input_zone
             self.load_bin_pick_view()
         else:
+            self.root.bell()
             size = len(input_zone)
             self.go_to_frame_entry_1.delete(0,size)
             
@@ -250,12 +299,9 @@ class Picking_Parts_Window:
             self.go_to_frame_entry_1 = customtkinter.CTkEntry(go_to_frame, font=("Roboto", 16))
             self.go_to_frame_entry_1.pack(pady=12, padx=10)
             self.go_to_frame_entry_1.bind('<Return>', self.check_zone_location)
+            self.go_to_frame_entry_1.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.go_to_frame_entry_1))
             self.go_to_frame_entry_1.focus_set()
 
-            #short_cut_frame = customtkinter.CTkFrame(go_to_frame)
-            #short_cut_frame.pack(side='bottom', pady=20, padx=20)
-
-            #customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)
             customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='bottom', anchor = 'w', pady=10, padx=25)
             self.bind = self.root.bind('<F3>', self.exit_go_to_view)
         
@@ -273,12 +319,15 @@ class Picking_Parts_Window:
         for i in range(0,int(self.pick_list.size/2)):
             if(str(self.pick_list.iat[i,0]) == self.bin_picked):
                 self.go_to_zone_location()
+                break
+            elif(i == int(self.pick_list.size/2) - 1):
+                self.root.bell()
 
-    def to_uppercase(self, event):
-        input_bin = self.pick_frame_entry_1.get()
-        length = len(input_bin)
-        self.pick_frame_entry_1.delete(0,length)
-        self.pick_frame_entry_1.insert(0,input_bin.upper())
+    def to_uppercase(self, frame):
+        input_text = frame.get()
+        length = len(input_text)
+        frame.delete(0,length)
+        frame.insert(0,input_text.upper())
             
     def load_picking_view(self):
            
@@ -296,7 +345,7 @@ class Picking_Parts_Window:
         self.pick_frame_entry_1 = customtkinter.CTkEntry(enter_bin_frame, width = 80, font=("Roboto", 16))
         self.pick_frame_entry_1.pack(side='left', anchor = 'w', pady=2, padx=10)
         self.pick_frame_entry_1.bind('<Return>', self.check_picking_view)
-        self.pick_frame_entry_1.bind('<KeyRelease>', self.to_uppercase)
+        self.pick_frame_entry_1.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.pick_frame_entry_1))
         self.pick_frame_entry_1.focus_set()
 
         customtkinter.CTkLabel(enter_bin_frame, text="- Enter Bin", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
