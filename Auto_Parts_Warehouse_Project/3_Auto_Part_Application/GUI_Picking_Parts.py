@@ -173,10 +173,10 @@ class Picking_Parts_Window:
         self.bin_pick_frame_entry1.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.bin_pick_frame_entry1))
         self.bin_pick_frame_entry1.focus_set()
 
-        validation = self.root.register(self.validate_entry)
         self.bin_pick_frame_qty_input = customtkinter.CTkLabel(s_frame, text="QTY: ", font=("Roboto", 20))
         self.bin_pick_frame_qty_input.pack(side='left', anchor='w', pady=4, padx=5)
 
+        validation = self.root.register(self.validate_entry)
         self.bin_pick_frame_qty_entry = customtkinter.CTkEntry(s_frame, justify='center', width = 50, font=("Roboto", 16), validate="key", validatecommand=(validation, "%P"))
         self.bin_pick_frame_qty_entry.insert(0, '1')
         self.bin_pick_frame_qty_entry.pack(side='left', anchor='w', pady=4, padx=5)
