@@ -96,8 +96,6 @@ class Staging_Parts_Window:
         self.product_info_label = customtkinter.CTkLabel(product_info_frame, text="Display Product Info", font=("Roboto", 40))
         self.product_info_label.pack(pady=12, padx=10)
 
-        #query = "SELECT PRODUCT_ID, COUNT(UNITS) FROM ORDER_LIST WHERE ZONE = '"+self.tote_zone+"' AND PRODUCT_ID = "+self.product_id+" GROUP BY PRODUCT_ID"
-        #print(query)
         query = "SELECT OL.PRODUCT_ID, COUNT(OL.UNITS), P.PRODUCT_NAME "\
                 "FROM ORDER_LIST OL "\
                 "JOIN PRODUCT P " \

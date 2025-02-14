@@ -78,37 +78,47 @@ class Gather_Parts_Window:
         shelf_list = pd.read_sql(query, self.engine)
 
         self.product_id = shelf_list.iat[0,0]
-        self.quantity = shelf_list.iat[0,1]        
-
-        customtkinter.CTkLabel(shelf_view_frame, text=self.box_tote, font=("Roboto", 28)).pack(pady=10, padx=10)
+        self.quantity = shelf_list.iat[0,1]
         
-        customtkinter.CTkLabel(shelf_view_frame, text=self.curr_stage, font=("Roboto", 28)).pack(pady=10, padx=10)
+        tote_text = "Tote: " + self.box_tote
+        customtkinter.CTkLabel(shelf_view_frame, text=tote_text, font=("Roboto", 20)).pack(pady=10, padx=10)
 
-        test_frame = customtkinter.CTkFrame(shelf_view_frame)
-        test_frame.pack(side='top', padx=5)
+        display_info_frame = customtkinter.CTkFrame(shelf_view_frame)
+        display_info_frame.pack(side='top', pady=10, padx=30)
 
-        product_frame = customtkinter.CTkFrame(test_frame)
-        product_frame.pack(side='left', anchor='w')
+        display_product = "Product: " + str(self.product_id)
+        self.product_info_show_product = customtkinter.CTkLabel(display_info_frame, text=display_product, font=("Roboto", 20))
+        self.product_info_show_product.pack(side='left', anchor='w',pady=4, padx=10)
+
+        display_quantity = "QTY: " + str(self.quantity)
+        self.product_info_show_quantity = customtkinter.CTkLabel(display_info_frame, text=display_quantity, font=("Roboto", 20))
+        self.product_info_show_quantity.pack(side='left', anchor='w',pady=4, padx=10)
+
+        scan_frame = customtkinter.CTkFrame(shelf_view_frame)
+        scan_frame.pack(side='top', anchor='w', pady=10, padx=10)
         
-        self.shelf_view_product_display = customtkinter.CTkLabel(product_frame, text="Scan Product: " + str(self.product_id), font=("Roboto", 20))
-        self.shelf_view_product_display.pack(side='top',pady=5, padx=10)
+        customtkinter.CTkLabel(scan_frame, text="Scan Product:", font=("Roboto", 20)).pack(side='left', anchor='w',pady=4, padx=10)  
 
-        self.shelf_view_product_entry = customtkinter.CTkEntry(product_frame, font=("Roboto", 16))
-        self.shelf_view_product_entry.pack(pady=5, padx=10)
+        self.shelf_view_product_entry = customtkinter.CTkEntry(scan_frame, width = 110, font=("Roboto", 16))
+        self.shelf_view_product_entry.pack(side='left', anchor='w',pady=2, padx=2)
         self.shelf_view_product_entry.bind('<Return>', self.check_product)
+        self.shelf_view_product_entry.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.shelf_view_product_entry))
         self.shelf_view_product_entry.focus_set()
-        
-        quantity_frame = customtkinter.CTkFrame(test_frame)
-        quantity_frame.pack(side='right', anchor='e')
-        
-        self.shelf_view_quantity_display = customtkinter.CTkLabel(quantity_frame, text="QTY: " + str(self.quantity), font=("Roboto", 20))
-        self.shelf_view_quantity_display.pack(pady=5, padx=10)
 
-        self.shelf_view_quantity_entry = customtkinter.CTkEntry(quantity_frame, justify='center', width = 40, font=("Roboto", 16))
+        self.quantity_frame = customtkinter.CTkLabel(scan_frame,text="QTY: ",font=("Roboto",20), width=60)
+        self.quantity_frame.pack(side='left', anchor='w', pady=2, padx=2)  
+
+        validation = self.root.register(self.validate_entry)
+        self.shelf_view_quantity_entry = customtkinter.CTkEntry(scan_frame, width = 55, font=("Roboto", 16), validate="key",validatecommand=(validation,"%P"))
         self.shelf_view_quantity_entry.insert(0, '1')
-        self.shelf_view_quantity_entry.pack(pady=5, padx=10)
+        self.shelf_view_quantity_entry.pack(side='left', anchor='w',pady=2, padx=2)
         self.shelf_view_quantity_entry.bind('<Return>', self.check_product)
         self.shelf_view_quantity_entry.configure(state='disabled')
+
+        #d_part_name = "Part Name: " + str(product_name)
+        d_part_name = "Part Name: "
+        self.bin_pick_part_name = customtkinter.CTkLabel(shelf_view_frame, text=d_part_name, font=("Roboto", 20))
+        self.bin_pick_part_name.pack(pady=2, padx=10)
 
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind_exit = self.root.bind('<F3>', self.exit_display_product_view)
@@ -157,9 +167,6 @@ class Gather_Parts_Window:
             self.curr_stage = pd.read_sql(query, self.engine).iat[0,0]
 
             customtkinter.CTkLabel(staging_view_frame, text="Order ID: " + str(self.order_id), font=("Roboto", 40)).pack(side='top', pady=12, padx=10)
-
-            #scan_stage_frame = customtkinter.CTkFrame(staging_view_frame)
-            #scan_stage_frame.pack(side='top', pady=5, padx=10)
             
             stage_display = "Scan Stage: " + self.curr_stage
             customtkinter.CTkLabel(staging_view_frame, text=stage_display, font=("Roboto", 20)).pack(side='top', pady=10, padx=2)
@@ -169,10 +176,6 @@ class Gather_Parts_Window:
             self.staging_view_entry.bind('<Return>', self.check_stage_input)
             self.staging_view_entry.focus_set()
 
-            #short_cut_frame = customtkinter.CTkFrame(staging_view_frame)
-            #short_cut_frame.pack(side='bottom', pady=20, padx=20)
-
-            #customtkinter.CTkLabel(short_cut_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=30)
             customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
             self.bind = self.root.bind('<F3>', self.exit_load_staging_view)
 
@@ -195,7 +198,11 @@ class Gather_Parts_Window:
 
         if(int(tote_exists) == 1 and int(empty_tote) == 0):
             self.load_staging_view()
-            
+        else:
+            self.root.bell()
+            self.tote_indicator.configure(text="Empty Or Incorrect Tote")
+            size = len(tote_zone)
+            self.tote_name_entry.delete(0,size)
         
     def load_input_box_view(self):
         self.curr_frame.destroy()
@@ -216,6 +223,9 @@ class Gather_Parts_Window:
         self.scan_box_entry.bind('<Return>', self.check_input_box)
         self.scan_box_entry.focus_set()
 
+        self.tote_indicator = customtkinter.CTkLabel(box_display_frame, text="", font=("Roboto", 20))
+        self.tote_indicator.pack(side = 'top', pady=10, padx=10)
+
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_load_input_box_view)
 
@@ -230,9 +240,11 @@ class Gather_Parts_Window:
         self.order_id = self.gather_parts_enter_product.get()
         if(int(self.order_id) in self.order_list):
             self.load_input_box_view()
-            print("Correct Order ID")
+            
         else:
-            print("Wrong Order ID")
+            self.root.bell()
+            size = len(self.order_id)
+            self.gather_parts_enter_product.delete(0,size)
 
     def load_gather_parts_view(self):
         self.curr_frame.destroy()
@@ -251,7 +263,8 @@ class Gather_Parts_Window:
 
         customtkinter.CTkLabel(enter_order_id_frame, text="Order: ", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
 
-        self.gather_parts_enter_product = customtkinter.CTkEntry(enter_order_id_frame, font=("Roboto", 16), width = 80)
+        validation = self.root.register(self.validate_entry)
+        self.gather_parts_enter_product = customtkinter.CTkEntry(enter_order_id_frame, font=("Roboto", 16), width = 80, validate="key", validatecommand=(validation, "%P"))
         self.gather_parts_enter_product.pack(pady=1, padx=1)
         self.gather_parts_enter_product.bind('<Return>', self.check_order_id)
         self.gather_parts_enter_product.focus_set()
@@ -325,13 +338,26 @@ class Gather_Parts_Window:
             self.i = self.i + 12
         self.display_order_list()
         self.display_extra_order()
-
         
     def exit_window(self, event):
         self.root.unbind('<F3>', self.bind_exit)
         self.curr_frame.destroy()
         self.gui_application.display_command_window()
         
+    def to_uppercase(self, frame):
+        input_text = frame.get()
+        length = len(input_text)
+        frame.delete(0,length)
+        frame.insert(0,input_text.upper())
+
+    def validate_entry(self, new_text):
+        if not new_text:
+            return True
+        try:
+            int(new_text)
+            return True
+        except ValueError:
+            return False
 
 def raise_frame(frame):
     frame.tkraise()
