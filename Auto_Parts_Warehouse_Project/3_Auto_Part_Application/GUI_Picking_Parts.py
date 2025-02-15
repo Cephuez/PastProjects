@@ -357,7 +357,7 @@ class Picking_Parts_Window:
             bin_name = self.pick_list.iat[i,0]
             qty = self.pick_list.iat[i,1]
             pick_word = bin_name + ":\tPicks: " + str(qty) 
-            customtkinter.CTkLabel(pick_frame, text=pick_word, font=("Roboto", 20)).pack(side='top', pady=2, padx=10)
+            customtkinter.CTkLabel(pick_frame, text=pick_word, font=("Roboto", 20)).pack(side='top', anchor='w', pady=2, padx=100)
 
         customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='bottom', anchor = 'w', pady=10, padx=25)
         self.bind = self.root.bind('<F3>', self.exit_window)

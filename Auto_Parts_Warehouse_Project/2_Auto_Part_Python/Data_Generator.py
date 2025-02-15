@@ -111,21 +111,21 @@ class code_generator:
             exit(0)
 
         # ------------------------Change order id------------------------------------
-        for i in range(801, 901):
+        for i in range(918, 933):
             #print("Loop:" + str(i))
             customer_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             customer_id = random.choice(customer_list)
 
             # -------------------Change this for later products-------------------------
-            quantity_list = [1,2,3]
+            quantity_list = [1,2]
             
             query = "BEGIN PACKAGE_ORDERS.CREATE_NEW_ORDER("+str(customer_id)+"); COMMIT; END;"
             print("Create Order: "+query)
             result = cursor.execute(query)
-            for x in range(2):
+            for x in range(3):
 
                 # -------------------Change this for different products----------------------
-                product_id_list_1 = [5, 20, 24, 2, 1]
+                product_id_list_1 = [1,2,3,4,5,6,7,8,9,10]
                 qty = random.choice(quantity_list)
                 while(True):
                     product_id = random.choice(product_id_list_1)
@@ -133,9 +133,7 @@ class code_generator:
                         old_product_id = product_id
                         break
                 
-                #print("Customer: " + str(customer_id) + "         Product ID: " + str(product_id) + "               QTY: " + str(qty))
                 query = "BEGIN PACKAGE_CUSTOMER_ORDERS.ADD_PRODUCT_TO_ORDER("+str(i)+","+str(product_id)+","+str(qty)+"); COMMIT; END;"
-                #print("Add Product: " + query)
                 result = cursor.execute(query)
             
             query = "BEGIN PACKAGE_CUSTOMER_ORDERS.CONFIRM_CUSTOMER_ORDER("+str(i)+"); COMMIT; END;"

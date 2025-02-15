@@ -26,7 +26,7 @@ class Gather_Parts_Window:
         print("Update Frame")
         query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
                 "WHERE ORDER_ID = "+self.order_id+" AND ZONE = '"+self.curr_stage+"' GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID"
-
+        
         shelf_list = pd.read_sql(query, self.engine)
 
         if(shelf_list.size == 0):
@@ -35,22 +35,24 @@ class Gather_Parts_Window:
             product_id = shelf_list.iat[0,0]
             qty = shelf_list.iat[0,1]
             self.product_id = product_id
-            
-            self.shelf_view_product_display.configure(text = "Scan Product: " + str(product_id))
-            self.shelf_view_quantity_display.configure(text = "QTY: " + str(qty))
+
+            size = len(self.shelf_view_product_entry.get())
+            self.shelf_view_product_entry.delete(0, size)
+
+            self.product_info_show_product.configure(text = "Product: " + str(product_id))
+            self.product_info_show_quantity.configure(text = "QTY: " + str(qty))
 
 
     # ORDER_TOTE_00013
     def check_product(self,event):
+        self.shelf_view_quantity_entry.configure(state='normal')
         input_product_id = self.shelf_view_product_entry.get()
         input_qty = self.shelf_view_quantity_entry.get()
 
         if(str(input_product_id) == str(self.product_id)):
             query = "SELECT SUM(QUANTITY) FROM ORDERS_READY WHERE ORDER_ID = "+self.order_id+\
                     " AND PRODUCT_ID = "+str(input_product_id)+" AND ZONE = '"+self.curr_stage+"'"
-            print(query)
             qty_result = pd.read_sql(query, self.engine).iat[0,0]
-            print(qty_result)
 
             if(int(input_qty) <= int(qty_result)):
                 # Employee ID: 4
@@ -59,8 +61,15 @@ class Gather_Parts_Window:
                         ", 'STAGE', '"+self.curr_stage+"', 'COMP', '"+self.box_tote+"');"\
                         " commit; END;"
                 result = cursor.execute(query)
+                self.shelf_view_quantity_entry.configure(state='disabled')
                 self.update_product_view()
-                print(query)
+            else:
+                self.root.bell()
+                self.shelf_view_quantity_entry.focus_set()
+        else:
+            self.root.bell()
+            length = len(input_product_id)
+            self.shelf_view_product_entry.delete(0, length)
 
     def display_product_in_shelf_view(self):
         self.curr_frame.destroy()
@@ -139,16 +148,22 @@ class Gather_Parts_Window:
         state_condition = self.shelf_view_quantity_entry.cget("state")
         if(state_condition == 'disabled'):
             self.shelf_view_quantity_entry.configure(state='normal')
+            self.shelf_view_quantity_entry.focus_set()
         elif(state_condition == 'normal'):
             num = self.shelf_view_quantity_entry.get()
             if(len(num) == 0):
                 self.shelf_view_quantity_entry.insert(0, '1')
             self.shelf_view_quantity_entry.configure(state='disabled')
+            self.shelf_view_product_entry.focus_set()
             
     def check_stage_input(self,event):
         stage_input = self.staging_view_entry.get()
         if(stage_input == self.curr_stage):
             self.display_product_in_shelf_view()
+        else:
+            self.root.bell()
+            length = len(stage_input)
+            self.staging_view_entry.delete(0,length)
 
     def load_staging_view(self):
         self.curr_frame.destroy()
@@ -174,6 +189,7 @@ class Gather_Parts_Window:
             self.staging_view_entry = customtkinter.CTkEntry(staging_view_frame, font=("Roboto", 16))
             self.staging_view_entry.pack(side='top', pady=12, padx=10)
             self.staging_view_entry.bind('<Return>', self.check_stage_input)
+            self.staging_view_entry.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.staging_view_entry))
             self.staging_view_entry.focus_set()
 
             customtkinter.CTkLabel(self.curr_frame, text="F3. Exit", font=("Roboto", 20)).pack(side='left', anchor = 'sw', pady=10, padx=25)
@@ -190,7 +206,7 @@ class Gather_Parts_Window:
     def check_input_box(self, event):
         self.box_tote = self.scan_box_entry.get()
 
-        query = "SELECT COUNT(*) FROM APPROVED_ZONE WHERE ZONE = '"+self.box_tote+"'"
+        query = "SELECT COUNT(*) FROM APPROVED_ZONE WHERE ZONE = '"+self.box_tote+"' AND BIN = 'COMP'"
         tote_exists = pd.read_sql(query, self.engine).iat[0,0]
 
         query = "SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = '"+self.box_tote+"' AND ORDER_ID != " + str(self.order_id)
@@ -201,8 +217,8 @@ class Gather_Parts_Window:
         else:
             self.root.bell()
             self.tote_indicator.configure(text="Empty Or Incorrect Tote")
-            size = len(tote_zone)
-            self.tote_name_entry.delete(0,size)
+            size = len(self.box_tote)
+            self.scan_box_entry.delete(0,size)
         
     def load_input_box_view(self):
         self.curr_frame.destroy()
@@ -221,6 +237,7 @@ class Gather_Parts_Window:
         self.scan_box_entry = customtkinter.CTkEntry(scan_box_frame, font=("Roboto", 16), width = 220)
         self.scan_box_entry.pack(side='left', anchor='w', pady=12, padx=10)
         self.scan_box_entry.bind('<Return>', self.check_input_box)
+        self.scan_box_entry.bind('<KeyRelease>', lambda eff:self.to_uppercase(self.scan_box_entry))
         self.scan_box_entry.focus_set()
 
         self.tote_indicator = customtkinter.CTkLabel(box_display_frame, text="", font=("Roboto", 20))

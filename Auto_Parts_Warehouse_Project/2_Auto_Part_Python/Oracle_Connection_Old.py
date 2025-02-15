@@ -20,7 +20,7 @@ from sqlalchemy import create_engine
 
 # This will generate orders and dates for orders
 # This allows me to create thousands of order without having to deal manual inputs
-#generator = code_generator("Generator")
-#generator.log_in()
-#generator.generate_orders()
+generator = code_generator("Generator")
+generator.log_in()
+generator.generate_orders()
 
