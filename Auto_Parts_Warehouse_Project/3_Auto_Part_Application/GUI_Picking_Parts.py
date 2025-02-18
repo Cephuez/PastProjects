@@ -228,7 +228,6 @@ class Picking_Parts_Window:
         tote_zone = self.tote_pick_frame_tote_entry_1.get()
 
         check_tote_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('PICK', '" +tote_zone+"') FROM DUAL"
-        print("4: Query")
         tote_result = pd.read_sql(check_tote_query, self.engine).iat[0,0]
 
         if(tote_result == 1):
@@ -295,10 +294,10 @@ class Picking_Parts_Window:
             self.zone_loc = zone_location_list.iat[0,0]
             zone_loc = zone_location_list.iat[0,0]
             
-            query = "SELECT ORDER_ID, PRODUCT_ID, QUANTITY, ZONE_LOCATION FROM PICKS " \
-                        "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION, ORDER_ID"
-            print("3: " + query)
-            self.zone_list = pd.read_sql(query, self.engine)
+            #query = "SELECT ORDER_ID, PRODUCT_ID, QUANTITY, ZONE_LOCATION FROM PICKS " \
+            #            "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION, ORDER_ID"
+            #print("3: " + query)
+            #self.zone_list = pd.read_sql(query, self.engine)
 
             customtkinter.CTkLabel(go_to_frame, text="Go to location: "+zone_loc, font=("Roboto", 40)).pack(pady=12, padx=10)
 
