@@ -79,6 +79,7 @@ class Picking_Parts_Window:
             tote_zone = self.tote_zone
             if(str(input_product_id) == str(product_id)):
                 query = "SELECT PACKAGE_PICKS.CHECK_QUANTITY_INPUT("+str(product_id)+", "+str(input_qty)+", '"+bin_loc+"', '"+zone_loc+"') FROM DUAL"
+                print("6: " + query)
                 qty_result = pd.read_sql(query, self.engine).iat[0,0]
                 if(qty_result == 1):
                     size = len(input_product_id)
@@ -90,6 +91,7 @@ class Picking_Parts_Window:
                     cursor = self.connection.cursor()
                     query = "BEGIN PACKAGE_PICKS.PROCESS_PICKS(" + str(product_id) + ", 1, "+str(input_qty)+", '" + bin_loc + "', '" + zone_loc + \
                         "', 'PICK', '" + tote_zone +"'); commit; END;"
+                    print("7: " + query)
                     result = cursor.execute(query)
                     self.update_product_view()
                 else:
@@ -135,6 +137,7 @@ class Picking_Parts_Window:
                 "WHERE ZONE_LOCATION = '"+ zone_loc +"' AND PICK_STATUS = 'N' " \
                 "GROUP BY PK.PRODUCT_ID, PK.ZONE_LOCATION, P.PRODUCT_NAME " \
                 "ORDER BY PK.ZONE_LOCATION"
+        print("5: " + query)
         self.product_zone_list = pd.read_sql(query, self.engine)
 
         product_id = self.product_zone_list.iat[0,0]
@@ -223,12 +226,13 @@ class Picking_Parts_Window:
     def check_tote(self, event):
         tote_bin = 'PICK'
         tote_zone = self.tote_pick_frame_tote_entry_1.get()
-        self.tote_zone = tote_zone
 
         check_tote_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('PICK', '" +tote_zone+"') FROM DUAL"
+        print("4: Query")
         tote_result = pd.read_sql(check_tote_query, self.engine).iat[0,0]
 
         if(tote_result == 1):
+            self.tote_zone = tote_zone
             self.load_bin_pick_view()
         else:
             self.root.bell()
@@ -282,6 +286,7 @@ class Picking_Parts_Window:
         
         bin_picked = self.bin_picked
         query = "SELECT DISTINCT ZONE_lOCATION FROM PICKS WHERE BIN_LOCATION = '"+bin_picked+"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION"
+        print("2: " + query)
         zone_location_list = pd.read_sql(query, self.engine)
         
         if(zone_location_list.size == 0):
@@ -292,6 +297,7 @@ class Picking_Parts_Window:
             
             query = "SELECT ORDER_ID, PRODUCT_ID, QUANTITY, ZONE_LOCATION FROM PICKS " \
                         "WHERE ZONE_LOCATION = '" + zone_loc +"' AND PICK_STATUS = 'N' ORDER BY ZONE_LOCATION, ORDER_ID"
+            print("3: " + query)
             self.zone_list = pd.read_sql(query, self.engine)
 
             customtkinter.CTkLabel(go_to_frame, text="Go to location: "+zone_loc, font=("Roboto", 40)).pack(pady=12, padx=10)
@@ -351,6 +357,7 @@ class Picking_Parts_Window:
         customtkinter.CTkLabel(enter_bin_frame, text="- Enter Bin", font=("Roboto", 20)).pack(side='left', anchor = 'w', pady=1, padx=10)
 
         query = "SELECT BIN_LOCATION, SUM(QUANTITY) QUANTITY FROM PICKS WHERE TIME_PICKED IS NULL GROUP BY BIN_LOCATION ORDER BY BIN_LOCATION"
+        print("1: " + query)
 
         self.pick_list = pd.read_sql(query, self.engine)       
         for i in range(int(self.pick_list.size/2)):
