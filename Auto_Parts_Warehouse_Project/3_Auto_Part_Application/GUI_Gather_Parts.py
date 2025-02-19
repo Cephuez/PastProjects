@@ -23,10 +23,16 @@ class Gather_Parts_Window:
         self.curr_frame = frame2
 
     def update_product_view(self):
-        print("Update Frame")
-        query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
-                "WHERE ORDER_ID = "+self.order_id+" AND ZONE = '"+self.curr_stage+"' GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID"
-        
+        #query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
+        #        "WHERE ORDER_ID = "+self.order_id+" AND ZONE = '"+self.curr_stage+"' GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID"
+
+        query = "SELECT O.PRODUCT_ID, COUNT(O.QUANTITY), P.PRODUCT_NAME " \
+                "FROM ORDERS_READY O " \
+                "JOIN PRODUCT P " \
+                "    ON O.PRODUCT_ID = P.PRODUCT_ID " \
+                "WHERE O.ORDER_ID = "+self.order_id+" AND O.ZONE = '"+self.curr_stage+"' " \
+                "GROUP BY O.PRODUCT_ID, P.PRODUCT_NAME " \
+                "ORDER BY O.PRODUCT_ID "
         shelf_list = pd.read_sql(query, self.engine)
 
         if(shelf_list.size == 0):
@@ -34,6 +40,7 @@ class Gather_Parts_Window:
         else:
             product_id = shelf_list.iat[0,0]
             qty = shelf_list.iat[0,1]
+            part_name = shelf_list.iat[0,2]
             self.product_id = product_id
 
             size = len(self.shelf_view_product_entry.get())
@@ -41,6 +48,8 @@ class Gather_Parts_Window:
 
             self.product_info_show_product.configure(text = "Product: " + str(product_id))
             self.product_info_show_quantity.configure(text = "QTY: " + str(qty))
+            self.bin_pick_part_name.configure(text = "Part Name: " + str(part_name))
+            
 
 
     # ORDER_TOTE_00013
@@ -52,6 +61,7 @@ class Gather_Parts_Window:
         if(str(input_product_id) == str(self.product_id)):
             query = "SELECT SUM(QUANTITY) FROM ORDERS_READY WHERE ORDER_ID = "+self.order_id+\
                     " AND PRODUCT_ID = "+str(input_product_id)+" AND ZONE = '"+self.curr_stage+"'"
+            print("6. " + query)
             qty_result = pd.read_sql(query, self.engine).iat[0,0]
 
             if(int(input_qty) <= int(qty_result)):
@@ -60,6 +70,8 @@ class Gather_Parts_Window:
                 query = "BEGIN PACKAGE_ORDERS.MOVE_STAGE_TO_BOX("+self.order_id+", "+input_product_id+", 4, "+input_qty+\
                         ", 'STAGE', '"+self.curr_stage+"', 'COMP', '"+self.box_tote+"');"\
                         " commit; END;"
+
+                print("7. " + query)
                 result = cursor.execute(query)
                 self.shelf_view_quantity_entry.configure(state='disabled')
                 self.update_product_view()
@@ -81,13 +93,24 @@ class Gather_Parts_Window:
         shelf_view_label = customtkinter.CTkLabel(shelf_view_frame, text="Pick Part From Shelf", font=("Roboto", 40))
         shelf_view_label.pack(pady=12, padx=10)
 
-        query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
-                "WHERE ORDER_ID = "+self.order_id+" AND ZONE = '"+self.curr_stage+"' GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID"
+        #query = "SELECT PRODUCT_ID, COUNT(QUANTITY) FROM ORDERS_READY " \
+        #        "WHERE ORDER_ID = "+self.order_id+" AND ZONE = '"+self.curr_stage+"' GROUP BY PRODUCT_ID ORDER BY PRODUCT_ID"
+
+        query = "SELECT O.PRODUCT_ID, COUNT(O.QUANTITY), P.PRODUCT_NAME " \
+                "FROM ORDERS_READY O " \
+                "JOIN PRODUCT P " \
+                "    ON O.PRODUCT_ID = P.PRODUCT_ID " \
+                "WHERE O.ORDER_ID = "+self.order_id+" AND O.ZONE = '"+self.curr_stage+"' " \
+                "GROUP BY O.PRODUCT_ID, P.PRODUCT_NAME " \
+                "ORDER BY O.PRODUCT_ID "
+
+        print("5. " + query)
 
         shelf_list = pd.read_sql(query, self.engine)
 
         self.product_id = shelf_list.iat[0,0]
         self.quantity = shelf_list.iat[0,1]
+        part_name = shelf_list.iat[0,2]
         
         tote_text = "Tote: " + self.box_tote
         customtkinter.CTkLabel(shelf_view_frame, text=tote_text, font=("Roboto", 20)).pack(pady=10, padx=10)
@@ -125,7 +148,7 @@ class Gather_Parts_Window:
         self.shelf_view_quantity_entry.configure(state='disabled')
 
         #d_part_name = "Part Name: " + str(product_name)
-        d_part_name = "Part Name: "
+        d_part_name = "Part Name: " + part_name
         self.bin_pick_part_name = customtkinter.CTkLabel(shelf_view_frame, text=d_part_name, font=("Roboto", 20))
         self.bin_pick_part_name.pack(pady=2, padx=10)
 
@@ -173,6 +196,7 @@ class Gather_Parts_Window:
         self.curr_frame = staging_view_frame
 
         query = "SELECT DISTINCT(ZONE) FROM ORDERS_READY WHERE ORDER_ID = "+self.order_id+" ORDER BY ZONE"
+        print("4. " + query)
         get_stage_list = pd.read_sql(query, self.engine)
 
         if(get_stage_list.size == 0):
@@ -208,8 +232,10 @@ class Gather_Parts_Window:
 
         query = "SELECT COUNT(*) FROM APPROVED_ZONE WHERE ZONE = '"+self.box_tote+"' AND BIN = 'COMP'"
         tote_exists = pd.read_sql(query, self.engine).iat[0,0]
+        print("2. " + query)
 
         query = "SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = '"+self.box_tote+"' AND ORDER_ID != " + str(self.order_id)
+        print("3. " + query)
         empty_tote = pd.read_sql(query, self.engine).iat[0,0]
 
         if(int(tote_exists) == 1 and int(empty_tote) == 0):
@@ -286,7 +312,9 @@ class Gather_Parts_Window:
         self.gather_parts_enter_product.bind('<Return>', self.check_order_id)
         self.gather_parts_enter_product.focus_set()
 
+        # Query 1
         get_orders_query = "SELECT DISTINCT(ORDER_ID) FROM ORDERS_READY ORDER BY ORDER_ID"
+        print("1. " + get_orders_query)
         all_order_list = pd.read_sql(get_orders_query, self.engine)
         list_length = all_order_list.size
 
