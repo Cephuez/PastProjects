@@ -1,2 +1,2 @@
 Will add some images here later on.
-Note that this is a showcase that I have basic knowledge of how to connect to databases using Power BI. 
+Note that this is to demonstrate I have some knowledge of using Power BI. My expertise is more around the coding aspect like PL/SQL, Python, and other coding languages.
