@@ -22,8 +22,6 @@ class Staging_Parts_Window:
         self.curr_frame = frame2
 
     def update_view(self):
-
-        #query = "SELECT PRODUCT_ID, COUNT(UNITS) FROM ORDER_LIST WHERE ZONE = '"+self.tote_zone+"' AND PRODUCT_ID = "+self.product_id+" GROUP BY PRODUCT_ID"
         query = "SELECT OL.PRODUCT_ID, COUNT(OL.UNITS), P.PRODUCT_NAME "\
         "FROM ORDER_LIST OL " \
         "JOIN PRODUCT P " \
@@ -63,7 +61,8 @@ class Staging_Parts_Window:
         self.product_info_enter_quantity.configure(state='normal')
         quantity_scanned = self.product_info_enter_quantity.get()
         stage_scanned = self.product_info_enter_stage.get()
-        
+
+        # Query 6
         check_stage_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('STAGE', '" +stage_scanned+"') FROM DUAL"
         stage_result = pd.read_sql(check_stage_query, self.engine).iat[0,0]
         print(stage_result)
@@ -71,6 +70,7 @@ class Staging_Parts_Window:
         if(stage_result != 0 and (int(quantity_scanned) <= int(self.quantity) and int(stage_result) == 1)):
                 # Move parts to Stage Area
                 # Employee ID = 1
+                # Query 7
                 query = "BEGIN PACKAGE_ORDER_LIST.MOVE_TOTE_TO_STAGE("+str(self.product_id)+", 1, "+str(quantity_scanned)+", 'PICK', " \
                         "'"+self.tote_zone+"' , 'STAGE' , '"+stage_scanned+"'); commit; END;"
                 cursor = self.connection.cursor()
@@ -96,6 +96,7 @@ class Staging_Parts_Window:
         self.product_info_label = customtkinter.CTkLabel(product_info_frame, text="Display Product Info", font=("Roboto", 40))
         self.product_info_label.pack(pady=12, padx=10)
 
+        # Query 5
         query = "SELECT OL.PRODUCT_ID, COUNT(OL.UNITS), P.PRODUCT_NAME "\
                 "FROM ORDER_LIST OL "\
                 "JOIN PRODUCT P " \
@@ -174,9 +175,11 @@ class Staging_Parts_Window:
     def check_product_scanned(self, event):
         self.product_id = self.stage_product_view_entry.get()
 
+        # Query 3
         query_check_valid_product = "SELECT COUNT(*) FROM PRODUCT WHERE TO_CHAR(PRODUCT_ID) = '" + str(self.product_id) +"'"
         product_check = pd.read_sql(query_check_valid_product, self.engine).iat[0,0]
         if(product_check == 1):
+            #Query 4
             query = "SELECT COUNT(UNITS) FROM ORDER_LIST WHERE ZONE = '"+self.tote_zone+"' AND PRODUCT_ID = "+self.product_id +" ORDER BY PRODUCT_ID"
             product_count = pd.read_sql(query, self.engine).iat[0,0]
 
@@ -226,13 +229,15 @@ class Staging_Parts_Window:
         self.load_staging_view()
 
     def check_tote_item_list(self, event):
-        print("Will check tote here")
         tote_zone = self.tote_name_entry.get()
+
+        # Query 1
         check_tote_query = "SELECT PACKAGE_APPROVED_ZONE.BIN_AND_ZONE_EXISTS('PICK', '" +tote_zone+"') FROM DUAL"
         tote_result = pd.read_sql(check_tote_query, self.engine).iat[0,0]
         self.tote_zone = tote_zone
 
         if(tote_result == 1):
+            # Query 2
             check_tote_empty_query = "SELECT COUNT(*) FROM ORDER_LIST WHERE ZONE = '"+tote_zone+"'"
             tote_empty_result = pd.read_sql(check_tote_empty_query, self.engine).iat[0,0]
 
