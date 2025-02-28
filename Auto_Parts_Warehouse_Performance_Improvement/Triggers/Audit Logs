@@ -1,4 +1,22 @@
 /*
+* Table used for reference
+*/ 
+CREATE TABLE ORDER_LIST_AUDIT(
+    EMPLOYEE_ID INT,
+    USER_NAME VARCHAR2(255),
+    ORDER_ID INT,
+    OPERATION VARCHAR2(50),
+    PRODUCT_ID INT,
+    UNITS INT,
+    OLD_BIN VARCHAR2(255),
+    OLD_ZONE VARCHAR2(255),
+    NEW_BIN VARCHAR(255),
+    NEW_ZONE VARCHAR2(255),
+    DATE_CHANGE DATE
+)
+
+
+/*
 * This will keep track who moved parts around the warehouse
 */
 
