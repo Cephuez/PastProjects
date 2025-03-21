@@ -5,10 +5,8 @@ AS
     PROCEDURE ADD_PO_PRODUCTS_TO_RECEIVING(PO_NUM INT);
     PROCEDURE ADD_INCOMING_PRODUCTS(P_NUM INT, UN INT);
     PROCEDURE STOCK_PRODUCT(P_ID INT, B_NAME VARCHAR2, Z_NAME VARCHAR2, UN INT);
-    PROCEDURE MOVE_PRODUCT(P_ID INT, OLD_BIN VARCHAR2, OLD_ZONE VARCHAR2, UN INT, 
-        NEW_BIN VARCHAR2, NEW_ZONE VARCHAR2);
+    PROCEDURE MOVE_PRODUCT(P_ID INT, OLD_BIN VARCHAR2, OLD_ZONE VARCHAR2, UN INT, NEW_BIN VARCHAR2, NEW_ZONE VARCHAR2);
     PROCEDURE UPDATE_ZONE_COUNTS;
-
 END PACKAGE_WAREHOUSE_INVENTORY;
 
 create or replace PACKAGE BODY PACKAGE_WAREHOUSE_INVENTORY
@@ -32,12 +30,7 @@ AS
             INTO tote_product_id, tote_units;
             EXIT WHEN tote_cursor%notfound;
             /* Prompt the user what stage the items are being moved to */
-            /* Hard coded for now */
             MOVE_PRODUCT(tote_product_id, TOTE_BIN, TOTE_ZONE, tote_units, new_bin, new_zone);
-
-            DBMS_OUTPUT.PUT_LINE(tote_product_id);
-            DBMS_OUTPUT.PUT_LINE(tote_units);
-            DBMS_OUTPUT.PUT_LINE('');
         END LOOP;
     CLOSE tote_cursor;    
     END;
@@ -61,27 +54,22 @@ AS
     BEGIN
     OPEN po_cursor;
         LOOP
-            DBMS_OUTPUT.PUT_LINE('1');
             FETCH po_cursor 
             INTO part_num, qty, unit_p, proc;
             EXIT WHEN po_cursor%notfound;
-            DBMS_OUTPUT.PUT_LINE('2');
             p_name := GET_PART_NAME(part_num);
-            DBMS_OUTPUT.PUT_LINE('3');
             p_id := GET_PRODUCT_ID(p_name);  
-            DBMS_OUTPUT.PUT_LINE('4');
-            p_count := CHECK_PRODUCT_ON_ZONE(P_ID, 'REC', 'Receiving');
-            DBMS_OUTPUT.PUT_LINE('5');
+            p_count := CHECK_PRODUCT_ON_ZONE(P_ID, 'REC', 'RECEIVING');
             IF p_count = 0 THEN
                 INSERT INTO WAREHOUSE_INVENTORY(WH_ID, BIN, ZONE, UNITS,  PRODUCT_ID)
-                VALUES(WH_S.nextval, 'REC', 'Receiving', qty, p_id);
+                VALUES(WH_S.nextval, 'REC', 'RECEIVING', qty, p_id);
             ELSE                
                 /*It adds up the total of quantity for a product*/
                 UPDATE WAREHOUSE_INVENTORY
                 SET UNITS = (UNITS + qty)
                 WHERE P_ID = PRODUCT_ID    
                     AND BIN LIKE 'REC'
-                    AND ZONE LIKE 'Receiving'; 
+                    AND ZONE LIKE 'RECEIVING'; 
             END IF;
 
             UPDATE PRODUCT
@@ -106,7 +94,7 @@ AS
 
         IF P_ID != 0 THEN
             INSERT INTO WAREHOUSE_INVENTORY(WH_ID, PRODUCT_ID, UNITS, BIN, ZONE)
-            VALUES(WH_S.nextval, P_ID, UN, 'REC', 'Receiving');
+            VALUES(WH_S.nextval, P_ID, UN, 'REC', 'RECEIVING');
         END IF;
     END;
 
@@ -119,7 +107,6 @@ AS
     END IF;
     p_count:=CHECK_PRODUCT_ON_ZONE(P_ID, B_NAME, Z_NAME);
         IF p_count > 0 THEN
-            DBMS_OUTPUT.PUT_LINE('Area has product id already');
             UPDATE WAREHOUSE_INVENTORY
             SET UNITS = (UNITS + UN)
             WHERE P_ID = PRODUCT_ID 
@@ -152,12 +139,10 @@ AS
     PACKAGE_WAREHOUSE_INVENTORY.update_zone_counts;
     END;
 
-
     PROCEDURE UPDATE_ZONE_COUNTS
     IS
     BEGIN
     DELETE FROM WAREHOUSE_INVENTORY
     WHERE UNITS = 0;
     END;
-
 END;
