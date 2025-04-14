@@ -1,1 +1,1 @@
-I've uploaded my packages online. I've continously editting my code, so I'll try to update my code whenever I can.
+I named my packages accordingly to the tables they are associated. Example, Package EMPLOYEES is attached to table EMPLOYEES.

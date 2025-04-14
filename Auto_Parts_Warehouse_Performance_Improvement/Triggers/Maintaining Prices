@@ -1,0 +1,13 @@
+/*
+* This will prevent the user from making any drastic changes to a prices.
+*/
+
+CREATE OR REPLACE TRIGGER PRODUCT_PRICE_CHANGE
+BEFORE INSERT OR UPDATE
+ON PRODUCT
+FOR EACH ROW
+begin
+    if (:new.unit_price < (:old.unit_price * 0.95)) OR (:new.unit_price > (:old.unit_price * 1.05)) then
+    raise_application_error(-20100, 'Price can''t be lower or higher than 5%');
+    end if;
+end;
