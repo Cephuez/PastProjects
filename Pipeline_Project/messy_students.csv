@@ -1,0 +1,8 @@
+Student_ID,First_Name,Last_Name,Gender,Age,Department,Attendance (%),Study Hours,Internet Access,Grade
+S1001,omar,Williams,Male,22.0,  Mathematics ,97.3,10.5,yes,C
+S1002,Maria,Brown,FEMALE,18.0,Business,,27.1,No,F
+S1003,Li ,Chan,Male,20.0,Computer Science,85.0,,Yes,B
+S1004,Aisha,Smith,female,21.0,  engineering,90.2,12.0, YES,A
+S1005,omar,Williams,Male,22.0,Mathematics,97.3,10.5,yes,C
+S1006,James,Garcia,MALE,,Biology,78.5,8.5,no,D
+S1007,Linda, ,Female,19.0,Mathematics,91.4,9.0,yes,A
