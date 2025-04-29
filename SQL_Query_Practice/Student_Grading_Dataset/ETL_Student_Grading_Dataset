@@ -496,7 +496,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 291,
+   "execution_count": 299,
    "id": "22f36f40-77d3-4cda-9b5c-1fd9e3db0913",
    "metadata": {},
    "outputs": [
@@ -504,31 +504,15 @@
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "+----------+----------+---------+-----------+\n",
-      "|STUDENT_ID|FIRST_NAME|LAST_NAME|TOTAL_SCORE|\n",
-      "+----------+----------+---------+-----------+\n",
-      "|     S1000|      Omar| Williams|      83.49|\n",
-      "|     S1001|     Maria|    Brown|      92.29|\n",
-      "|     S1002|     Ahmed|    Jones|      93.55|\n",
-      "|     S1003|      Omar| Williams|      51.03|\n",
-      "|     S1004|      John|    Smith|      90.91|\n",
-      "|     S1005|      Liam|    Brown|      92.66|\n",
-      "|     S1006|     Ahmed|    Jones|      79.78|\n",
-      "|     S1007|     Ahmed|    Smith|       74.0|\n",
-      "|     S1008|      Omar|    Smith|      55.55|\n",
-      "|     S1009|      Sara|    Smith|      61.98|\n",
-      "|     S1010|      John|    Smith|      74.52|\n",
-      "|     S1011|      Omar| Williams|      93.25|\n",
-      "|     S1012|      John|    Davis|      90.16|\n",
-      "|     S1013|      John| Williams|       74.8|\n",
-      "|     S1014|      Liam| Williams|      89.28|\n",
-      "|     S1015|     Ahmed|    Jones|      88.29|\n",
-      "|     S1016|     Maria|    Jones|      78.95|\n",
-      "|     S1017|      Liam|    Davis|      61.02|\n",
-      "|     S1018|      Liam|    Jones|       67.4|\n",
-      "|     S1019|      John|  Johnson|       58.2|\n",
-      "+----------+----------+---------+-----------+\n",
-      "only showing top 20 rows\n",
+      "+----------+----------+---------+-----------+----+\n",
+      "|STUDENT_ID|FIRST_NAME|LAST_NAME|TOTAL_SCORE|RANK|\n",
+      "+----------+----------+---------+-----------+----+\n",
+      "|     S5640|      Liam|  Johnson|      99.99|   1|\n",
+      "|     S5319|      John|    Davis|      99.98|   2|\n",
+      "|     S1731|       Ali|    Smith|       99.9|   3|\n",
+      "|     S3987|      John| Williams|       99.9|   3|\n",
+      "|     S3158|      Sara|    Smith|      99.85|   5|\n",
+      "+----------+----------+---------+-----------+----+\n",
       "\n"
      ]
     }
@@ -536,9 +520,14 @@
    "source": [
     "# Who are the top 5 students in terms of total score but sleep less than 6 hours per night?\n",
     "query = '''\n",
-    "        SELECT STUDENT_ID, FIRST_NAME, LAST_NAME, TOTAL_SCORE\n",
-    "        FROM STUDENTS\n",
-    "        WHERE TOTAL_SCORE \n",
+    "        WITH TOP_5 AS (\n",
+    "            SELECT STUDENT_ID, FIRST_NAME, LAST_NAME, TOTAL_SCORE, RANK()OVER(ORDER BY TOTAL_SCORE DESC) RANK\n",
+    "            FROM STUDENTS\n",
+    "            WHERE SLEEP_HOURS_PER_NIGHT <= 6\n",
+    "        )\n",
+    "        SELECT *\n",
+    "        FROM TOP_5\n",
+    "        WHERE RANK <= 5\n",
     "    '''\n",
     "result = spark.sql(query)\n",
     "result.show()"
@@ -559,18 +548,26 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 301,
    "id": "3223f78a-20a9-4caf-b8df-82f87aa8c782",
    "metadata": {},
    "outputs": [],
    "source": [
     "# Conver my result to a Pandas Dataframe. PySpark is not working well to conver it into a parquet/csv file.\n",
-    "#pandas_df = result.toPandas()\n",
+    "pandas_df = result.toPandas()\n",
     "#path = os.path.join(output_dir, 'student_results.parquet')\n",
     "#pandas_df.to_parquet(path, engine='pyarrow') \n",
-    "#path = os.path.join(output_dir, 'student_results.csv')\n",
-    "#pandas_df.to_csv(path, index=False)"
+    "path = os.path.join(output_dir, 'Top_Five_Total_Score.csv')\n",
+    "pandas_df.to_csv(path, index=False)"
    ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a709bba5-446c-4798-8297-7af439799d87",
+   "metadata": {},
+   "outputs": [],
+   "source": []
   }
  ],
  "metadata": {
