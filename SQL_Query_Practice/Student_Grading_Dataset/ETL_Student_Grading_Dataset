@@ -493,7 +493,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 289,
+   "execution_count": 39,
    "id": "769be061-7e3b-4094-aa0f-428557a3e8dd",
    "metadata": {},
    "outputs": [],
@@ -518,27 +518,10 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 299,
+   "execution_count": 41,
    "id": "22f36f40-77d3-4cda-9b5c-1fd9e3db0913",
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "+----------+----------+---------+-----------+----+\n",
-      "|STUDENT_ID|FIRST_NAME|LAST_NAME|TOTAL_SCORE|RANK|\n",
-      "+----------+----------+---------+-----------+----+\n",
-      "|     S5640|      Liam|  Johnson|      99.99|   1|\n",
-      "|     S5319|      John|    Davis|      99.98|   2|\n",
-      "|     S1731|       Ali|    Smith|       99.9|   3|\n",
-      "|     S3987|      John| Williams|       99.9|   3|\n",
-      "|     S3158|      Sara|    Smith|      99.85|   5|\n",
-      "+----------+----------+---------+-----------+----+\n",
-      "\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "# Who are the top 5 students in terms of total score but sleep less than 6 hours per night?\n",
     "query = '''\n",
@@ -552,7 +535,7 @@
     "        WHERE RANK <= 5\n",
     "    '''\n",
     "result = spark.sql(query)\n",
-    "result.show()"
+    "#result.show()"
    ]
   },
   {
