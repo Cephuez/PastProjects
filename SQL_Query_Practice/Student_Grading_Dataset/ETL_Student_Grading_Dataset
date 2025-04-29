@@ -71,6 +71,22 @@
   },
   {
    "cell_type": "code",
+   "execution_count": 43,
+   "id": "83bc1434-0c1a-4dce-8d7d-13ffac669c06",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pandas_df = df.toPandas()\n",
+    "path = os.path.join(output_dir, 'Student_Grading_Dataset.parquet')\n",
+    "pandas_df.to_parquet(path, engine='pyarrow') \n",
+    "path = os.path.join(output_dir, 'Student_Grading_Dataset.csv')\n",
+    "pandas_df.to_csv(path, index=False)\n",
+    "path = os.path.join(output_dir, 'Student_Grading_Dataset.json')\n",
+    "pandas_df.to_json(path, orient='records', lines=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
    "execution_count": 9,
    "id": "eba66088-11b6-4f48-920b-439b38b61874",
    "metadata": {},
