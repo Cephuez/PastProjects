@@ -1,0 +1,3 @@
+GENDER,count(STUDENT_ID)
+Female,1250
+Male,1334

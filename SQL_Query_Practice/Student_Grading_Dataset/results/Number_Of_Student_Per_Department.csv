@@ -1,0 +1,5 @@
+DEPARTMENT,count(STUDENT_ID)
+Engineering,1274
+Mathematics,1223
+Business,1264
+CS,1239
