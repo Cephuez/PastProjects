@@ -251,7 +251,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 163,
+   "execution_count": 33,
    "id": "633446d9-dc8f-4ccc-852b-1c2ead0b3849",
    "metadata": {},
    "outputs": [],
@@ -264,19 +264,12 @@
     "        GROUP BY GENDER\n",
     "    '''\n",
     "result = spark.sql(query)\n",
-    "pandas_df = result.toPandas()\n",
-    "path = os.path.join(output_dir, 'G.parquet')\n",
-    "pandas_df.to_parquet(path, engine='pyarrow') \n",
-    "path = os.path.join(output_dir, 'Student_AVG_Age_Per_Department.csv')\n",
-    "pandas_df.to_csv(path, index=False)\n",
-    "path = os.path.join(output_dir, 'Student_AVG_Age_Per_Department.json')\n",
-    "pandas_df.to_json(path, orient='records', lines=True)\n",
     "#result.show()"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 165,
+   "execution_count": 35,
    "id": "3084b88c-e1af-4a18-804c-4462e0f76626",
    "metadata": {},
    "outputs": [],
@@ -293,7 +286,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 167,
+   "execution_count": 37,
    "id": "30589f64-1167-4a40-9d1d-fd782b375b32",
    "metadata": {},
    "outputs": [],
