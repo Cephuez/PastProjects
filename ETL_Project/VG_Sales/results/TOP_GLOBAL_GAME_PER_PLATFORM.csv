@@ -1,0 +1,32 @@
+PLATFORM,NAME,YEAR,GENRE,PUBLISHER,GLOBAL_SALES
+2600,Pac-Man,1982,Puzzle,Atari,7.81
+3DO,Policenauts,1995,Adventure,Konami Digital Entertainment,0.06
+3DS,Pokemon X/Pokemon Y,2013,Role-Playing,Nintendo,14.35
+DC,Sonic Adventure,1998,Platform,Sega,2.42
+DS,New Super Mario Bros.,2006,Platform,Nintendo,30.01
+GB,Pokemon Red/Pokemon Blue,1996,Role-Playing,Nintendo,31.37
+GBA,Pokemon Ruby/Pokemon Sapphire,2002,Role-Playing,Nintendo,15.85
+GC,Super Smash Bros. Melee,2001,Fighting,Nintendo,7.07
+GEN,Sonic the Hedgehog 2,1992,Platform,Sega,6.03
+GG,Sonic the Hedgehog 2 (8-bit),1992,Platform,Sega,0.04
+N64,Super Mario 64,1996,Platform,Nintendo,11.89
+NES,Super Mario Bros.,1985,Platform,Nintendo,40.24
+NG,Samurai Shodown II,1994,Fighting,SNK,0.25
+PC,The Sims 3,2009,Simulation,Electronic Arts,8.11
+PCFX,Blue Breaker: Ken Yorimo Hohoemi o,1996,Role-Playing,NEC,0.03
+PS,Gran Turismo,1997,Racing,Sony Computer Entertainment,10.95
+PS2,Grand Theft Auto: San Andreas,2004,Action,Take-Two Interactive,20.81
+PS3,Grand Theft Auto V,2013,Action,Take-Two Interactive,21.4
+PS4,Call of Duty: Black Ops 3,2015,Shooter,Activision,14.24
+PSP,Grand Theft Auto: Liberty City Stories,2005,Action,Take-Two Interactive,7.72
+PSV,Minecraft,2014,Misc,Sony Computer Entertainment Europe,2.25
+SAT,Virtua Fighter 2,1995,Fighting,Sega,1.93
+SCD,Sonic CD,1993,Platform,Sega,1.5
+SNES,Super Mario World,1990,Platform,Nintendo,20.61
+TG16,Doukyuusei,1995,Adventure,NEC,0.14
+WS,Final Fantasy,2000,Role-Playing,SquareSoft,0.51
+Wii,Wii Sports,2006,Sports,Nintendo,82.74
+WiiU,Mario Kart 8,2014,Racing,Nintendo,6.96
+X360,Kinect Adventures!,2010,Misc,Microsoft Game Studios,21.82
+XB,Halo 2,2004,Shooter,Microsoft Game Studios,8.49
+XOne,Call of Duty: Black Ops 3,2015,Shooter,Activision,7.3

@@ -1,0 +1,31 @@
+{"PLATFORM":"2600","NAME":"Pac-Man","YEAR":1982,"GENRE":"Puzzle","PUBLISHER":"Atari","GLOBAL_SALES":7.81}
+{"PLATFORM":"3DO","NAME":"Policenauts","YEAR":1995,"GENRE":"Adventure","PUBLISHER":"Konami Digital Entertainment","GLOBAL_SALES":0.06}
+{"PLATFORM":"3DS","NAME":"Pokemon X\/Pokemon Y","YEAR":2013,"GENRE":"Role-Playing","PUBLISHER":"Nintendo","GLOBAL_SALES":14.35}
+{"PLATFORM":"DC","NAME":"Sonic Adventure","YEAR":1998,"GENRE":"Platform","PUBLISHER":"Sega","GLOBAL_SALES":2.42}
+{"PLATFORM":"DS","NAME":"New Super Mario Bros.","YEAR":2006,"GENRE":"Platform","PUBLISHER":"Nintendo","GLOBAL_SALES":30.01}
+{"PLATFORM":"GB","NAME":"Pokemon Red\/Pokemon Blue","YEAR":1996,"GENRE":"Role-Playing","PUBLISHER":"Nintendo","GLOBAL_SALES":31.37}
+{"PLATFORM":"GBA","NAME":"Pokemon Ruby\/Pokemon Sapphire","YEAR":2002,"GENRE":"Role-Playing","PUBLISHER":"Nintendo","GLOBAL_SALES":15.85}
+{"PLATFORM":"GC","NAME":"Super Smash Bros. Melee","YEAR":2001,"GENRE":"Fighting","PUBLISHER":"Nintendo","GLOBAL_SALES":7.07}
+{"PLATFORM":"GEN","NAME":"Sonic the Hedgehog 2","YEAR":1992,"GENRE":"Platform","PUBLISHER":"Sega","GLOBAL_SALES":6.03}
+{"PLATFORM":"GG","NAME":"Sonic the Hedgehog 2 (8-bit)","YEAR":1992,"GENRE":"Platform","PUBLISHER":"Sega","GLOBAL_SALES":0.04}
+{"PLATFORM":"N64","NAME":"Super Mario 64","YEAR":1996,"GENRE":"Platform","PUBLISHER":"Nintendo","GLOBAL_SALES":11.89}
+{"PLATFORM":"NES","NAME":"Super Mario Bros.","YEAR":1985,"GENRE":"Platform","PUBLISHER":"Nintendo","GLOBAL_SALES":40.24}
+{"PLATFORM":"NG","NAME":"Samurai Shodown II","YEAR":1994,"GENRE":"Fighting","PUBLISHER":"SNK","GLOBAL_SALES":0.25}
+{"PLATFORM":"PC","NAME":"The Sims 3","YEAR":2009,"GENRE":"Simulation","PUBLISHER":"Electronic Arts","GLOBAL_SALES":8.11}
+{"PLATFORM":"PCFX","NAME":"Blue Breaker: Ken Yorimo Hohoemi o","YEAR":1996,"GENRE":"Role-Playing","PUBLISHER":"NEC","GLOBAL_SALES":0.03}
+{"PLATFORM":"PS","NAME":"Gran Turismo","YEAR":1997,"GENRE":"Racing","PUBLISHER":"Sony Computer Entertainment","GLOBAL_SALES":10.95}
+{"PLATFORM":"PS2","NAME":"Grand Theft Auto: San Andreas","YEAR":2004,"GENRE":"Action","PUBLISHER":"Take-Two Interactive","GLOBAL_SALES":20.81}
+{"PLATFORM":"PS3","NAME":"Grand Theft Auto V","YEAR":2013,"GENRE":"Action","PUBLISHER":"Take-Two Interactive","GLOBAL_SALES":21.4}
+{"PLATFORM":"PS4","NAME":"Call of Duty: Black Ops 3","YEAR":2015,"GENRE":"Shooter","PUBLISHER":"Activision","GLOBAL_SALES":14.24}
+{"PLATFORM":"PSP","NAME":"Grand Theft Auto: Liberty City Stories","YEAR":2005,"GENRE":"Action","PUBLISHER":"Take-Two Interactive","GLOBAL_SALES":7.72}
+{"PLATFORM":"PSV","NAME":"Minecraft","YEAR":2014,"GENRE":"Misc","PUBLISHER":"Sony Computer Entertainment Europe","GLOBAL_SALES":2.25}
+{"PLATFORM":"SAT","NAME":"Virtua Fighter 2","YEAR":1995,"GENRE":"Fighting","PUBLISHER":"Sega","GLOBAL_SALES":1.93}
+{"PLATFORM":"SCD","NAME":"Sonic CD","YEAR":1993,"GENRE":"Platform","PUBLISHER":"Sega","GLOBAL_SALES":1.5}
+{"PLATFORM":"SNES","NAME":"Super Mario World","YEAR":1990,"GENRE":"Platform","PUBLISHER":"Nintendo","GLOBAL_SALES":20.61}
+{"PLATFORM":"TG16","NAME":"Doukyuusei","YEAR":1995,"GENRE":"Adventure","PUBLISHER":"NEC","GLOBAL_SALES":0.14}
+{"PLATFORM":"WS","NAME":"Final Fantasy","YEAR":2000,"GENRE":"Role-Playing","PUBLISHER":"SquareSoft","GLOBAL_SALES":0.51}
+{"PLATFORM":"Wii","NAME":"Wii Sports","YEAR":2006,"GENRE":"Sports","PUBLISHER":"Nintendo","GLOBAL_SALES":82.74}
+{"PLATFORM":"WiiU","NAME":"Mario Kart 8","YEAR":2014,"GENRE":"Racing","PUBLISHER":"Nintendo","GLOBAL_SALES":6.96}
+{"PLATFORM":"X360","NAME":"Kinect Adventures!","YEAR":2010,"GENRE":"Misc","PUBLISHER":"Microsoft Game Studios","GLOBAL_SALES":21.82}
+{"PLATFORM":"XB","NAME":"Halo 2","YEAR":2004,"GENRE":"Shooter","PUBLISHER":"Microsoft Game Studios","GLOBAL_SALES":8.49}
+{"PLATFORM":"XOne","NAME":"Call of Duty: Black Ops 3","YEAR":2015,"GENRE":"Shooter","PUBLISHER":"Activision","GLOBAL_SALES":7.3}

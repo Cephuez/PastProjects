@@ -1,4 +1,10 @@
 Rank,Name,Platform,Year,Genre,Publisher,NA_Sales,EU_Sales,JP_Sales,Other_Sales,Global_Sales
+-4, sAmplE,wIi,N/A,SPORTS, ,41.49,29.02, ,8.46,82.7a4
+-3, sAmplE,wIi,2006,SPORTS, ,41.49,29.02, ,8.46,82.74
+-3, sAmplE,wIi,2006,SPORTS, ,41.49,29.a2, ,8.46,NULL
+-2,,,,,,,,,,
+-1, Wii Sports,Wii,2da6,Sports,Nintendo,41s49,29.02,3.77,ff,82.74
+0, ,Wii,,Sports,,41.49,,3.77,,82.74
 1,Wii Sports,Wii,2006,Sports,Nintendo,41.49,29.02,3.77,8.46,82.74
 2,Super Mario Bros.,NES,1985,Platform,Nintendo,29.08,3.58,6.81,0.77,40.24
 3,Mario Kart Wii,Wii,2008,Racing,Nintendo,15.85,12.88,3.79,3.31,35.82
