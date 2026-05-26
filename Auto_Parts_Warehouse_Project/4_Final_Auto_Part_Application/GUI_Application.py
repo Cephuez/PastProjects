@@ -139,7 +139,7 @@ class gui_application:
         self.f1_button = customtkinter.CTkButton(master=self.log_in_frame, text="Login", command = self.login)
         self.f1_button.pack(pady=12, padx=10)       
 
-        self.error_label = customtkinter.CTkLabel(master=self.log_in_frame,text="1",font=("Roboto", 14),text_color="red")
+        self.error_label = customtkinter.CTkLabel(master=self.log_in_frame,text="",font=("Roboto", 14),text_color="red")
         self.error_label.pack(pady=(5, 10))
         
         raise_frame(self.log_in_frame)
