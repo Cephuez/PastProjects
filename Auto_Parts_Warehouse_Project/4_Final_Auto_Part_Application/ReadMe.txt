@@ -1,3 +1,7 @@
+If you wish to download the repository and run the code, make sure to have the necessary libraries:
+    - customtkinter, tkinter, requests
+Otherwise, I've provided the .exe file to test it out on your device.
+
 Made some final draft adjustments. The following features have been added
 
 1. Cloud Database
