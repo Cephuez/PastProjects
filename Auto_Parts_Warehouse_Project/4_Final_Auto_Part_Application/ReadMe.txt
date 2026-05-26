@@ -13,6 +13,6 @@ Made some final draft adjustments. The following features have been added
     - I've added two seperate roles
         - Demo users have some restricted permission 
         - Workers(Admin) have full access to the application
-4. Demo Testing (I've added a Doc that will explain how to use it)
+4. Demo Testing (I've added a PDF file with the login info and explanation)
     - Anyone now have access to my application by logging in
     - The restrictions are that you can't make any actions that would normally UPDATE or INSERT any values to my database.
