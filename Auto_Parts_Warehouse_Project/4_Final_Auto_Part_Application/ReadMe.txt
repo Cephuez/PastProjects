@@ -1,4 +1,4 @@
-Made some final draft adjustments. The following features has been added
+Made some final draft adjustments. The following features have been added
 
 1. Cloud Database
     - My app no longer connects to my personal DB
