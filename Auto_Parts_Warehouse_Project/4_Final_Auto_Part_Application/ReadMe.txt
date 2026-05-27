@@ -27,4 +27,4 @@ Made some final draft adjustments. The following features have been added
         - Workers(Admin) have full access to the application
 4. Demo Testing (I've added a PDF file with the login info and explanation)
     - Anyone now have access to my application by logging in
-    - The restrictions prevent you from making changes to my database like INSERT and UPDATE, which happens often with full privileges.
+    - The restrictions prevent you from making changes to my database with INSERT and UPDATE statements, which happens often with full privileges.
