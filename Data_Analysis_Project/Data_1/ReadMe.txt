@@ -1,2 +1,3 @@
-I will document what functions I used on the file. Also will post pictures
-of my dashboard
+Dataset: Arizona Police Arrests: https://azgeo-open-data-agic.hub.arcgis.com/datasets/COS-GIS::police-arrests/about
+
+Analyzing Police Arrests in Phoenix
