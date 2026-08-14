@@ -3,7 +3,7 @@ Dataset: Arizona Police Arrests: https://azgeo-open-data-agic.hub.arcgis.com/dat
 Arizona Drug Paraphernalia Arrests Findings:
 Note: January-March 2025 was excluded due to insufficient data
 
-Dashboard
+## Dashboard
 ![Stuff](pheonix_drug_picture.png)
 
 Findings: 
