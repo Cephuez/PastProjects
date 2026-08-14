@@ -2,7 +2,7 @@ San Diego Collisions Dataset: https://azgeo-open-data-agic.hub.arcgis.com/datase
 Note: 2015-2017 don't have sufficient data to be analyzed
 
 ## Dashboard
-![Stuff](pheonix_drug_picture.png)
+![Stuff](San_Diego_Collisions_Picture.png)
 
 San Diego Collisions Findings:  
 University Avenue & El Cajon BLVD remains the top 2 roads with the most collisions in the past decade
