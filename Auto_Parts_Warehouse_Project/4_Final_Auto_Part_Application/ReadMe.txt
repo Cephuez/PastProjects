@@ -1,13 +1,13 @@
 If you wish to download the repository and run the code, make sure to have the necessary libraries:
     - customtkinter, tkinter, requests
 Otherwise, I've provided the .exe file to test it out on your device along with some instructions (https://github.com/Cephuez/PastProjects/blob/main/Auto_Parts_Warehouse_Project/4_Final_Auto_Part_Application/Demo%20Instructions.pdf)
-Note: You will get a warning if you try to run the exe. 
+IMPORTANT NOTE: You will get a warning if you try to run the exe. 
 
-If either choice is not viable, I have provided a video of myself using all three features, plus a small preview of my application.
+If either choice is not viable, my website provides a small preview: https://www.saulsonidoperez.com/database-preview
+Also I've attached video links of me using the 3 main features
 Demo Link 1: https://youtu.be/TuX8qcJ62LY
 Demo Link 2: https://youtu.be/-sRb5uhVIMs
 Demo Link 3: https://youtu.be/2Gb8JoRZysY
-Site: https://www.saulsonidoperez.com/database-preview
 
 For more information about how my Database was structured, go here
 Link: https://github.com/Cephuez/PastProjects/tree/main/Auto_Parts_Warehouse_Project/1_Auto_Part_Database
