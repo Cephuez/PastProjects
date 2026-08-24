@@ -3,7 +3,7 @@ If you wish to download the repository and run the code, make sure to have the n
 Otherwise, I've provided the .exe file to test it out on your device along with some instructions (https://github.com/Cephuez/PastProjects/blob/main/Auto_Parts_Warehouse_Project/4_Final_Auto_Part_Application/Demo%20Instructions.pdf)
 IMPORTANT NOTE: You will get a warning if you try to run the exe. 
 
-If either choice is not viable, my website provides a small preview: https://www.saulsonidoperez.com/database-preview
+If either choice is not viable, my website provides a small preview: https://www.saulsonidoperez.com/app-preview
 Also I've attached video links of me using the 3 main features
 Demo Link 1: https://youtu.be/TuX8qcJ62LY
 Demo Link 2: https://youtu.be/-sRb5uhVIMs
