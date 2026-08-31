@@ -6,11 +6,14 @@ IMPORTANT NOTE: You will get a warning if you try to run the exe.
 If either choice is not viable, my website provides a small preview: https://www.saulsonidoperez.com/app-preview
 Also I've attached video links of me using the 3 main features
 
-![Application Demo](App_Gif_1.gif)
-
 Demo Link 1: https://youtu.be/TuX8qcJ62LY
+![Application Demo 1](App_Gif_1.gif)
+
 Demo Link 2: https://youtu.be/-sRb5uhVIMs
+![Application Demo 2](app_gif_2.gif)
+
 Demo Link 3: https://youtu.be/2Gb8JoRZysY
+![Application Demo 3](app_gif_3.gif)
 
 For more information about how my Database was structured, go here
 Link: https://github.com/Cephuez/PastProjects/tree/main/Auto_Parts_Warehouse_Project/1_Auto_Part_Database
