@@ -5,6 +5,9 @@ IMPORTANT NOTE: You will get a warning if you try to run the exe.
 
 If either choice is not viable, my website provides a small preview: https://www.saulsonidoperez.com/app-preview
 Also I've attached video links of me using the 3 main features
+
+![Application Demo](App_Gif_1.mp4)
+
 Demo Link 1: https://youtu.be/TuX8qcJ62LY
 Demo Link 2: https://youtu.be/-sRb5uhVIMs
 Demo Link 3: https://youtu.be/2Gb8JoRZysY
